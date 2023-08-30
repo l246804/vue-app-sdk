@@ -1,0 +1,149 @@
+{
+  /* ========================== Editor ========================== */
+  "emmet.triggerExpansionOnTab": true,
+  "files.autoSave": "onWindowChange",
+  "explorer.compactFolders": false,
+  // 保存时只通过 eslint 修复代码
+  // 折行行为可通过手动触发快捷键让 prettier 处理
+  "editor.formatOnSave": false,
+  "editor.minimap.renderCharacters": false,
+  "editor.tabSize": 2,
+  "editor.fontLigatures": true,
+  "editor.renderLineHighlight": "all",
+  "editor.renderWhitespace": "none",
+  "editor.wordWrapColumn": 100,
+  "editor.stickyTabStops": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "git.suggestSmartCommit": false,
+  "emmet.includeLanguages": {
+    "vue-html": "html",
+    "postcss": "css"
+  },
+  /* ========================== Editor ========================== */
+
+  /* ========================== Prettier ========================== */
+  "prettier.enable": true,
+  "prettier.htmlWhitespaceSensitivity": "css",
+  "prettier.jsxSingleQuote": false,
+  "prettier.proseWrap": "preserve",
+  "prettier.quoteProps": "as-needed",
+  "prettier.tabWidth": 2,
+  "prettier.useTabs": false,
+  "prettier.vueIndentScriptAndStyle": false,
+  "prettier.semi": false,
+  "prettier.arrowParens": "always",
+  "prettier.bracketSameLine": false,
+  "prettier.bracketSpacing": true,
+  "prettier.printWidth": 100,
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "none",
+  "prettier.singleAttributePerLine": true,
+  /* ========================== Prettier ========================== */
+
+  /* ========================== ESLint ========================== */
+  "eslint.enable": true,
+  "eslint.format.enable": true,
+  "eslint.probe": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "html",
+    "vue",
+    "markdown",
+    "json",
+    "jsonc"
+  ],
+  "eslint.validate": [
+    "javascript",
+    "javascriptreact",
+    "typescript",
+    "typescriptreact",
+    "html",
+    "vue",
+    "markdown",
+    "json",
+    "jsonc"
+  ],
+  /* ========================== ESLint ========================== */
+
+  /* ========================== Todo Tree ========================== */
+  "todo-tree.filtering.useBuiltInExcludes": "file and search excludes",
+  "todo-tree.highlights.defaultHighlight": {
+    "gutterIcon": true,
+    "background": "#00000000",
+    "type": "line"
+  },
+  "todo-tree.general.tags": ["BUG", "HACK", "FIXME", "TODO"],
+  "todo-tree.highlights.customHighlight": {
+    "TODO": {
+      "icon": "check-circle",
+      "foreground": "#2d8cf0"
+    },
+    "BUG": {
+      "icon": "bug",
+      "foreground": "#ed4014"
+    },
+    "HACK": {
+      "icon": "tools",
+      "foreground": "#5cadff"
+    },
+    "FIXME": {
+      "icon": "flame",
+      "foreground": "#ff9900"
+    }
+  },
+  /* ========================== Todo Tree ========================== */
+
+  /* ========================== Formatter ========================== */
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[vue]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[html]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[css]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[less]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[sass]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  /* ========================== Formatter ========================== */
+
+  /* ========================== 常更改的配置项 ========================== */
+  "cSpell.words": [
+    "antfu",
+    "commitlint",
+    "conventionalcommits",
+    "hookable",
+    "infile",
+    "mkdist",
+    "plopfile"
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "name": "vue-app-sdk",
+  "type": "module",
+  "version": "0.0.0",
+  "description": "Vue App SDK.",
+  "author": "RayHao <https://github.com/l246804>",
+  "license": "MIT",
+  "homepage": "https://github.com/l246804/vue-app-sdk",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/l246804/vue-app-sdk"
+  },
+  "bugs": {
+    "url": "https://github.com/l246804/vue-app-sdk/issues"
+  },
+  "keywords": [
+    "app",
+    "sdk",
+    "uniapp",
+    "taro",
+    "h5",
+    "web"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./*": "./*"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=14"
+  },
+  "scripts": {
+    "build": "unbuild",
+    "release": "release-it",
+    "plop": "plop",
+    "cz": "cz"
+  },
+  "peerDependencies": {
+    "vue": ">=3",
+    "vue-router": ">=4"
+  },
+  "dependencies": {
+    "@rhao/lodash-x": "^0.3.0",
+    "@rhao/types-base": "^0.1.3",
+    "@types/lodash": "^4.14.197",
+    "@types/lodash-es": "^4.17.8",
+    "hookable": "^5.5.3",
+    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
+    "lodash-unified": "^1.0.3"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.41.0",
+    "@commitlint/cli": "^17.7.1",
+    "@commitlint/config-conventional": "^17.7.0",
+    "@commitlint/types": "^17.4.4",
+    "@release-it/conventional-changelog": "^7.0.0",
+    "@rhao/plop-generators": "latest",
+    "@types/node": "^20.5.7",
+    "commitizen": "^4.3.0",
+    "eslint": "^8.48.0",
+    "eslint-define-config": "^1.23.0",
+    "git-cz": "^4.9.0",
+    "husky": "^8.0.3",
+    "plop": "latest",
+    "prettier": "^3.0.3",
+    "release-it": "^16.1.5",
+    "typescript": "^5.2.2",
+    "unbuild": "^2.0.0",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.4"
+  }
+}
