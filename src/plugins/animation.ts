@@ -1,7 +1,7 @@
 import type { Fn, NoopFn } from '@rhao/types-base'
 import { assign } from 'lodash-unified'
 import type { ComputedRef } from 'vue'
-import { computed, reactive } from 'vue'
+import { computed, nextTick, reactive } from 'vue'
 import { type AppSDK } from '../sdk'
 
 export interface AppSDKAnimationOptions {
@@ -74,7 +74,7 @@ export function createAnimationPlugin(options?: AppSDKAnimationOptions) {
     }
 
     router.afterEach(() => {
-      if (isAllowRevert) toggle(opts.enabled)
+      if (isAllowRevert) nextTick(() => toggle(opts.enabled))
     })
 
     // 创建内部状态

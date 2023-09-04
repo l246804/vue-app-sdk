@@ -71,6 +71,7 @@ function replacePage() {
   // 启用状态默认会在切换路由后还原，可通过 allowRevert 禁止还原
   // animationControls.allowRevert(false)
   // 需要禁用导航动画时
+  // 仅用时需要设置 Transition.css 为 false，否则会影响切换效果
   animationControls.disable()
   router.replace('/a')
 }
@@ -88,9 +89,9 @@ function backPage() {
 
 <template>
   <RouterView v-slot="{ Component: routerComp }">
-    <KeepAlive :name="transitionName">
+    <Transition :name="transitionName" :css="!!transitionName">
       <Component :is="routerComp" />
-    </KeepAlive>
+    </Transition>
   </RouterView>
 </template>
 
