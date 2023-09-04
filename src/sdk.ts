@@ -2,10 +2,9 @@ import { assign, isFunction } from 'lodash-unified'
 import { inject } from 'vue'
 import type { App, ComponentCustomProperties, InjectionKey, Plugin } from 'vue'
 import { type Router, routerKey } from 'vue-router'
-import type { Fn } from '@rhao/types-base'
+import type { Fn, PartialWithout } from '@rhao/types-base'
 import { type AppSDKHooks, createHooks } from './hooks'
 import { type AppSDKRouterOptions, extendRouter } from './extendRouter'
-import type { PartialWithout } from './utils'
 
 export interface AppSDKOptions {
   /**

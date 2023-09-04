@@ -30,6 +30,11 @@
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
     },
+    "./plugins/*": {
+      "types": "./dist/plugins/*.d.ts",
+      "import": "./dist/plugins/*.mjs",
+      "require": "./dist/plugins/*.cjs"
+    },
     "./*": "./*"
   },
   "main": "./dist/index.cjs",
@@ -54,7 +59,7 @@
   },
   "dependencies": {
     "@rhao/lodash-x": "^0.3.0",
-    "@rhao/types-base": "^0.1.3",
+    "@rhao/types-base": "^0.2.0",
     "@types/lodash": "^4.14.197",
     "@types/lodash-es": "^4.17.8",
     "hookable": "^5.5.3",
