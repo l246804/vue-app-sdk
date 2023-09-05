@@ -1,5 +1,22 @@
 # Changelog
 
+## [0.1.0](https://github.com/l246804/vue-app-sdk/compare/v0.0.3...v0.1.0) (2023-09-05)
+
+
+### Features
+
+* 🎸 支持持久化路由详情数据 ([b801e42](https://github.com/l246804/vue-app-sdk/commit/b801e420c337885cbc77bfefc1b430be5b12c706))
+
+
+### Bug Fixes
+
+* 🐛 修复 keepAlive 缓存删除无法触发组件卸载 ([95fe1be](https://github.com/l246804/vue-app-sdk/commit/95fe1be6e71b15df0298d43a2eb829040501e39c))
+
+
+### Docs
+
+* ✏️ 修改 README.md 错别字 ([f51640e](https://github.com/l246804/vue-app-sdk/commit/f51640efdb343f40452d70449f3b5104245c65db))
+
 ## [0.0.3](https://github.com/l246804/vue-app-sdk/compare/v0.0.2...v0.0.3) (2023-09-04)
 
 
