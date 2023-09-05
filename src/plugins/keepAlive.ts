@@ -1,7 +1,7 @@
 import type { AwaitableFn, Fn } from '@rhao/types-base'
 import { assign } from 'lodash-unified'
 import type { Ref } from 'vue'
-import { nextTick, ref } from 'vue'
+import { nextTick, shallowRef } from 'vue'
 import type { RouteRecordNormalized } from 'vue-router'
 import { type AppSDKPlugin } from '../sdk'
 
@@ -95,7 +95,7 @@ export function createKeepAlivePlugin(options?: KeepAliveOptions): AppSDKPlugin 
 
     const router = sdk.router
     const hooks = sdk.hooks
-    const caches = ref<string[]>([])
+    const caches = shallowRef<string[]>([])
 
     // 自动收集和清理缓存
     if (opts.autoCollectAndClean) {
@@ -137,12 +137,11 @@ export function createKeepAlivePlugin(options?: KeepAliveOptions): AppSDKPlugin 
 
     function addCache(name: string) {
       if (!name || caches.value.includes(name)) return
-      caches.value.push(name)
+      caches.value = [...caches.value, name]
     }
 
     function removeCache(name: string) {
-      const index = caches.value.indexOf(name)
-      index > -1 && caches.value.splice(index, 1)
+      caches.value = caches.value.filter((item) => item !== name)
     }
 
     function refreshCache(name: string) {
