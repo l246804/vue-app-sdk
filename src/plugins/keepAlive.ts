@@ -26,7 +26,7 @@ export interface KeepAliveOptions {
    * })
    * ```
    */
-  beforeAddWithRoute: AwaitableFn<[route: RouteRecordNormalized], boolean | undefined>
+  beforeAddWithRoute?: AwaitableFn<[route: RouteRecordNormalized], boolean | undefined>
   /**
    * 删除路由缓存前执行，返回假值将阻止删除
    * @example
@@ -40,7 +40,7 @@ export interface KeepAliveOptions {
    * })
    * ```
    */
-  beforeRemoveWithRoute: AwaitableFn<[route: RouteRecordNormalized], boolean | undefined>
+  beforeRemoveWithRoute?: AwaitableFn<[route: RouteRecordNormalized], boolean | undefined>
 }
 
 export interface AppSDKKeepAlive {
