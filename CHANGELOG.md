@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.1](https://github.com/l246804/vue-app-sdk/compare/v0.1.0...v0.1.1) (2023-09-06)
+
+
+### Chores
+
+* 🤖 优化 keepAlive 配置项类型定义 ([ddfb785](https://github.com/l246804/vue-app-sdk/commit/ddfb785f589465e6c326fbdb3d816d6bfdee67e1))
+
 ## [0.1.0](https://github.com/l246804/vue-app-sdk/compare/v0.0.3...v0.1.0) (2023-09-05)
 
 
