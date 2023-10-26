@@ -132,6 +132,10 @@ export function createMyPlugin(): AppSDKPlugin {
 
 ## 迁移至 v1.x
 
+由于部分原因无法发布 v1.x 版本，故此请直接查看 v2.x 迁移步骤。
+
+## 迁移至 v2.x
+
 - 更改配置项传入方式 `app.use(sdk, {})` 为 createAppSDK({})
 - 更改插件注册方式 `sdk.use(plugin)` 为 `createAppSDK({ plugins: [plugin] })`
 - 移除 `sdk:mount`、`sdk:unmount` 事件
