@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.0.0](https://github.com/l246804/vue-app-sdk/compare/v0.1.1...v2.0.0) (2023-10-26)
+
+
+### Features
+
+* 🎸 add plugin sso ([73252de](https://github.com/l246804/vue-app-sdk/commit/73252def4870438b6d9a0130fe66903e5880309a))
+* 🎸 router support clearDetails ([e0505a6](https://github.com/l246804/vue-app-sdk/commit/e0505a60935ca2346143e2634db44b656525f466))
+
+
+### Refactors
+
+* 💡 重构 SDK 创建方式并优化代码 ([2225037](https://github.com/l246804/vue-app-sdk/commit/22250373a2ab37ee67b638e93efe1af6ebde8aaa))
+
 ## [0.1.1](https://github.com/l246804/vue-app-sdk/compare/v0.1.0...v0.1.1) (2023-09-06)
 
 
