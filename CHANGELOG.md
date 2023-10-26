@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/l246804/vue-app-sdk/compare/v2.0.0...v2.0.1) (2023-10-26)
+
+
+### Docs
+
+* ✏️ 补充 README.md ([fe298ea](https://github.com/l246804/vue-app-sdk/commit/fe298eae9daeb7246251ab51161f1314da631c42))
+
 ## [2.0.0](https://github.com/l246804/vue-app-sdk/compare/v0.1.1...v2.0.0) (2023-10-26)
 
 
