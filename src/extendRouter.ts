@@ -1,6 +1,6 @@
-import type { AwaitableFn, Fn } from '@rhao/types-base'
+import type { AwaitableFn, Fn, NoopFn } from '@rhao/types-base'
 import { assign } from 'lodash-unified'
-import { type RouteLocationNormalized, useRoute } from 'vue-router'
+import { type RouteLocationNormalized, isNavigationFailure, useRoute } from 'vue-router'
 import type { InjectionKey, ShallowReactive } from 'vue'
 import { inject, onBeforeUnmount, ref, shallowReactive, shallowRef } from 'vue'
 import type { ConfigurableWindow, RemovableRef, StorageLikeAsync } from '@vueuse/core'
@@ -16,6 +16,8 @@ export type AppSDKRouteDirection = 'forward' | 'backward'
 export interface AppSDKRouterOptions extends ConfigurableWindow {
   /**
    * 是否持久化详情，如果设为 `true`，则会将 `details` 存储在 `Storage` 中，防止刷新丢失
+   *
+   * ***注意：持久化后会缓存每次前进的详情数据，只有在手动替换或页面后退时进行清理，也可执行 `router.clearDetails()` 清理全部缓存。***
    * @default true
    */
   persistedDetails?: boolean
@@ -26,7 +28,7 @@ export interface AppSDKRouterOptions extends ConfigurableWindow {
   storage?: StorageLikeAsync
   /**
    * 持久化存储详情的键
-   * @default '__VUE_APP_SDK__ROUTE_DETAILS'
+   * @default '__VUE_APP_SDK__ROUTE_DETAILS_CACHE__'
    */
   storageKey?: string
   /**
@@ -76,7 +78,7 @@ export function useRouteDetails<T = unknown>() {
 
   const details = shallowReactive(resolveDetails(cache.value.get(routePath)))
 
-  const unListen = hooks.hook('sdk:router:details', (path, _details) => {
+  const cleanup = hooks.hook('sdk:router:details', (path, _details) => {
     // 非同一页面不合并
     if (routePath !== path) return
     assign(details, _details)
@@ -84,7 +86,7 @@ export function useRouteDetails<T = unknown>() {
     cache.value.set(routePath, resolveDetails(details))
   })
   // 在作用域释放前清除事件监听
-  onBeforeUnmount(unListen)
+  onBeforeUnmount(cleanup)
 
   return details as ShallowReactive<AppSDKRouteDetails<T>>
 }
@@ -98,7 +100,7 @@ export function extendRouter(sdk: AppSDK, options?: AppSDKRouterOptions) {
     identifyDirection,
     persistedDetails = true,
     storage = window?.localStorage,
-    storageKey = '__VUE_APP_SDK__ROUTE_DETAILS',
+    storageKey = '__VUE_APP_SDK__ROUTE_DETAILS_CACHE__',
   } = options || {}
 
   const createPersistedRef = <T>(key, value: T, shallow = true) => {
@@ -106,17 +108,17 @@ export function extendRouter(sdk: AppSDK, options?: AppSDKRouterOptions) {
     return (shallow ? shallowRef(value) : ref(value)) as RemovableRef<T>
   }
 
-  const details = createPersistedRef(storageKey, resolveDetails())
+  let details = resolveDetails()
   const detailsCache = createPersistedRef<Map<string, AppSDKRouteDetails>>(
-    `${storageKey}__CACHE`,
+    storageKey,
     new Map(),
     false,
   )
   sdk.app.provide(DETAILS_CACHE_KEY, detailsCache)
 
   sdk.hooks.hookOnce('sdk:unmount', () => {
-    details.value = null
-    detailsCache.value = null
+    details = resolveDetails()
+    detailsCache.value.clear()
   })
 
   let isBack = false
@@ -135,18 +137,17 @@ export function extendRouter(sdk: AppSDK, options?: AppSDKRouterOptions) {
     await hooks.callHookParallel('sdk:router:direction', direction)
     await hooks.callHookParallel(`sdk:router:${direction}`)
 
+    // 后退时删除来源路由缓存
+    if (direction === 'backward') detailsCache.value.delete(from.path)
+
     next()
   })
 
-  // 成功时触发hooks
-  router.afterEach((to, from, failure) => {
-    if (!failure) {
-      // 删除来源路由缓存
-      detailsCache.value.delete(from.path)
-      // 设置目标路由缓存，避免异步组件或前进时页面还未注册回调
-      detailsCache.value.set(to.path, resolveDetails(details.value))
-
-      hooks.callHookParallel('sdk:router:details', to.path, resolveDetails(details.value))
+  router.afterEach((to, _, failure) => {
+    if (!isNavigationFailure(failure)) {
+      // 成功时设置目标路由缓存，避免异步组件或前进时页面还未注册回调
+      detailsCache.value.set(to.path, resolveDetails(details))
+      hooks.callHookParallel('sdk:router:details', to.path, resolveDetails(details))
     }
   })
 
@@ -162,8 +163,16 @@ export function extendRouter(sdk: AppSDK, options?: AppSDKRouterOptions) {
     return originalGo(delta)
   }
 
+  // 重写 replace
+  const originalReplace = router.replace
+  router.replace = (to) => {
+    const path = router.currentRoute.value.path
+    detailsCache.value.delete(path)
+    return originalReplace(to)
+  }
+
   const updateDetailsByData = (data) => {
-    details.value = resolveDetails({ data })
+    details = resolveDetails({ data })
   }
 
   // 扩展自定义函数
@@ -186,6 +195,9 @@ export function extendRouter(sdk: AppSDK, options?: AppSDKRouterOptions) {
   router.backWithData = function (data) {
     updateDetailsByData(data)
     return router.goWithData(-1, data)
+  }
+  router.clearDetails = function () {
+    detailsCache.value.clear()
   }
 }
 
@@ -227,5 +239,9 @@ declare module 'vue-router' {
      * 携带跨页面数据，类似于 `params`，参考 `router.pushWithData`
      */
     goWithData: Fn<[delta: number, data?: any], ReturnType<Router['go']>>
+    /**
+     * 清除详情缓存
+     */
+    clearDetails: NoopFn
   }
 }

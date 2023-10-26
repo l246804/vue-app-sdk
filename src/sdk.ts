@@ -1,7 +1,7 @@
 import { assign, isFunction } from 'lodash-unified'
 import { inject } from 'vue'
 import type { App, ComponentCustomProperties, InjectionKey, Plugin } from 'vue'
-import { type Router, routerKey } from 'vue-router'
+import { type Router } from 'vue-router'
 import type { Fn, PartialWithout } from '@rhao/types-base'
 import { type AppSDKHooks, createHooks } from './hooks'
 import { type AppSDKRouterOptions, extendRouter } from './extendRouter'
@@ -99,35 +99,25 @@ export function createAppSDK() {
     sdk.hooks.callHookParallel('sdk:mount')
 
     // 重写 unmount
-    const mountApp = sdk.app!.unmount
+    const unmountApp = sdk.app!.unmount
     sdk.app!.unmount = function () {
       sdk.hooks.callHookParallel('sdk:unmount')
-      return mountApp()
+      return unmountApp()
     }
   }
 
   function install(app: App, options?) {
     const globProps = app.config.globalProperties
     const router = globProps.$router
-    if (!router) console.warn('[VueAppSDK] - Please install vue-router first!')
-
-    assign(sdk.options, options)
+    if (!router) throw new Error('[VueAppSDK] - Please install vue-router first!')
 
     sdk.app = app
     sdk.globProps = globProps
-
     sdk.router = router
-    if (!router) {
-      app.runWithContext(() => {
-        sdk.router = inject(routerKey)
-        extendRouter(sdk as AppSDK, sdk.options.router)
-        mountSDK()
-      })
-    }
-    else {
-      extendRouter(sdk as AppSDK, sdk.options.router)
-      mountSDK()
-    }
+
+    assign(sdk.options, options)
+    extendRouter(sdk as AppSDK, sdk.options.router)
+    mountSDK()
   }
 
   return sdk
