@@ -75,7 +75,6 @@ export function useRouteDetails<T = unknown>() {
   const routePath = useRoute().path
   const hooks = inject(APP_SDK_KEY)!.hooks
   const cache = inject(DETAILS_CACHE_KEY)!
-
   const details = shallowReactive(resolveDetails(cache.value.get(routePath)))
 
   const cleanup = hooks.hook('sdk:router:details', (path, _details) => {
@@ -94,36 +93,37 @@ export function useRouteDetails<T = unknown>() {
 /**
  * 扩展路由器
  */
-export function extendRouter(sdk: AppSDK, options?: AppSDKRouterOptions) {
-  const window = options?.window || defaultWindow
+export function extendRouter(sdk: AppSDK, options: AppSDKRouterOptions = {}) {
+  const { app, router, hooks } = sdk
   const {
     identifyDirection,
     persistedDetails = true,
+    window = defaultWindow,
     storage = window?.localStorage,
     storageKey = '__VUE_APP_SDK__ROUTE_DETAILS_CACHE__',
-  } = options || {}
+  } = options
 
-  const createPersistedRef = <T>(key, value: T, shallow = true) => {
+  // 创建可持久化 ref 变量
+  function createPersistedRef<T>(key, value: T, shallow = true) {
     if (persistedDetails) return useStorageAsync(key, value, storage, { shallow, window })
     return (shallow ? shallowRef(value) : ref(value)) as RemovableRef<T>
   }
 
+  let isBack = false
   let details = resolveDetails()
   const detailsCache = createPersistedRef<Map<string, AppSDKRouteDetails>>(
     storageKey,
     new Map(),
     false,
   )
-  sdk.app.provide(DETAILS_CACHE_KEY, detailsCache)
 
-  sdk.hooks.hookOnce('sdk:unmount', () => {
-    details = resolveDetails()
+  // 全局注入详情缓存
+  app.provide(DETAILS_CACHE_KEY, detailsCache)
+
+  // 注册清理事件
+  hooks.hook('sdk:cleanup', () => {
     detailsCache.value.clear()
   })
-
-  let isBack = false
-  const hooks = sdk.hooks
-  const router = sdk.router
 
   // 处理路由方向并触发 hooks
   router.beforeEach(async (to, from, next) => {

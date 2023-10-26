@@ -4,6 +4,6 @@ export {
   type AppSDKRouterOptions,
   useRouteDetails,
 } from './extendRouter'
-export type { AppSDKConfigHooks, AppSDKCustomConfigHooks, AppSDKHooks } from './hooks'
+export type { AppSDKConfigHooks, AppSDKHooks } from './hooks'
 
 export * from './sdk'

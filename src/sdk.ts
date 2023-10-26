@@ -1,8 +1,8 @@
-import { assign, isFunction } from 'lodash-unified'
+import { isFunction } from 'lodash-unified'
 import { inject } from 'vue'
-import type { App, ComponentCustomProperties, InjectionKey, Plugin } from 'vue'
+import type { App, InjectionKey } from 'vue'
 import { type Router } from 'vue-router'
-import type { Fn, PartialWithout } from '@rhao/types-base'
+import type { Fn } from '@rhao/types-base'
 import { type AppSDKHooks, createHooks } from './hooks'
 import { type AppSDKRouterOptions, extendRouter } from './extendRouter'
 
@@ -11,35 +11,40 @@ export interface AppSDKOptions {
    * 扩展路由器配置项
    */
   router?: AppSDKRouterOptions
+  /**
+   * 扩展插件列表
+   */
+  plugins?: AppSDKPlugin[]
 }
 
 export interface AppSDK {
   /**
    * 配置项
    */
-  options: AppSDKOptions
+  readonly options: AppSDKOptions
   /**
    * Vue 实例
    */
-  app: App
+  readonly app: App
   /**
    * Vue 路由器
    */
-  router: Router
-  /**
-   * Vue 实例全局属性，等同于 `app.config.globalProperties`
-   */
-  globProps: ComponentCustomProperties & Record<string, any>
+  readonly router: Router
   /**
    * hooks 管理器
    */
-  hooks: AppSDKHooks
+  readonly hooks: AppSDKHooks
+  /**
+   * 集中清理缓存和旧数据资源，不会干扰到 AppSDK 及插件功能正常运行
+   */
+  cleanup(): void
+  /**
+   * 自动被 `app.use` 调用，调用后将挂载 AppSDK 并初始化插件运行
+   */
+  install(app: App): void
 }
 
 export type AppSDKPlugin = Fn<[sdk: AppSDK]>
-
-type _AppSDK = PartialWithout<AppSDK, 'options' | 'hooks'> &
-Plugin<[options?: AppSDKOptions]> & { use: Fn<[plugin: AppSDKPlugin], _AppSDK> }
 
 export const APP_SDK_KEY: InjectionKey<AppSDK> = Symbol('App SDK')
 
@@ -51,7 +56,7 @@ export function useAppSDK() {
 }
 
 /**
- * 创建应用 SDK
+ * 创建 VueAppSDK
  *
  * @example
  * ```ts
@@ -59,68 +64,59 @@ export function useAppSDK() {
  * export const router = createRouter({ ... })
  *
  * // sdk.ts
- * export const sdk = createAppSDK()
+ * export const sdk = createAppSDK({ ... })
  *
  * // main.ts
  * const app = createApp({ ... })
  *
  * // 需先挂载路由器再挂载 SDK
- * app.use(router).use(sdk, { ... })
+ * app.use(router).use(sdk)
  *
  * app.mount('#app')
  * ```
  */
-export function createAppSDK() {
-  const sdk: _AppSDK = {
-    options: {} as AppSDKOptions,
-    hooks: createHooks(),
-    use,
-    install,
-  }
+export function createAppSDK(options: AppSDKOptions = {}) {
+  const { plugins = [] } = options
+  const hooks = createHooks()
 
-  const plugins: AppSDKPlugin[] = []
-  function use(plugin: AppSDKPlugin) {
-    !plugins.includes(plugin) && plugins.push(plugin)
-    return sdk
+  let isInitialed = false
+  const sdk: any = {
+    options,
+    hooks,
+    cleanup,
+    install(app: App) {
+      if (isInitialed) return
+      isInitialed = true
+
+      const props = app.config.globalProperties
+      const router = props.$router
+      if (!router) throw new Error('[VueAppSDK] - Please install vue-router first!')
+
+      // 挂载 app、router
+      sdk.app = app
+      sdk.router = router
+
+      // 挂载至全局 $appSDK 并全局注入
+      props.$appSDK = sdk
+      app.provide(APP_SDK_KEY, sdk)
+
+      // 扩展路由器
+      extendRouter(sdk, sdk.options.router)
+
+      // 初始化插件运行
+      runPlugins()
+    },
   }
 
   function runPlugins() {
     plugins.forEach((plugin) => isFunction(plugin) && plugin(sdk as AppSDK))
   }
 
-  function mountSDK() {
-    sdk.globProps!.$appSDK = sdk as AppSDK
-    // 注入 SDK
-    sdk.app!.provide(APP_SDK_KEY, sdk as AppSDK)
-
-    runPlugins()
-
-    // 通知 mount
-    sdk.hooks.callHookParallel('sdk:mount')
-
-    // 重写 unmount
-    const unmountApp = sdk.app!.unmount
-    sdk.app!.unmount = function () {
-      sdk.hooks.callHookParallel('sdk:unmount')
-      return unmountApp()
-    }
+  function cleanup() {
+    hooks.callHookParallel('sdk:cleanup')
   }
 
-  function install(app: App, options?) {
-    const globProps = app.config.globalProperties
-    const router = globProps.$router
-    if (!router) throw new Error('[VueAppSDK] - Please install vue-router first!')
-
-    sdk.app = app
-    sdk.globProps = globProps
-    sdk.router = router
-
-    assign(sdk.options, options)
-    extendRouter(sdk as AppSDK, sdk.options.router)
-    mountSDK()
-  }
-
-  return sdk
+  return sdk as Omit<AppSDK, 'app' | 'router'>
 }
 
 declare module 'vue' {

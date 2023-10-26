@@ -3,17 +3,11 @@ import type { HookCallback, HookKeys, Hookable } from 'hookable'
 import { createHooks as _createHooks } from 'hookable'
 import type { AppSDKRouteDetails, AppSDKRouteDirection } from './extendRouter'
 
-export interface AppSDKCustomConfigHooks {}
-
-export interface AppSDKConfigHooks extends AppSDKCustomConfigHooks {
+export interface AppSDKConfigHooks {
   /**
-   * SDK 挂载时触发
+   * SDK 集中清理时触发
    */
-  'sdk:mount': NoopFn
-  /**
-   * SDK 卸载时触发，即 `app.unmount`
-   */
-  'sdk:unmount': NoopFn
+  'sdk:cleanup': NoopFn
   /**
    * 路由前进或后退时触发
    */
@@ -27,7 +21,7 @@ export interface AppSDKConfigHooks extends AppSDKCustomConfigHooks {
    */
   'sdk:router:backward': NoopFn
   /**
-   * 调用扩展路由函数时触发
+   * 路由跳转成功时触发
    */
   'sdk:router:details': Fn<[targetPath: string, details: AppSDKRouteDetails]>
 }

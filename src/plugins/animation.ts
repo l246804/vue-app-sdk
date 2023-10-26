@@ -1,7 +1,7 @@
 import type { Fn, NoopFn } from '@rhao/types-base'
-import { assign } from 'lodash-unified'
 import type { ComputedRef } from 'vue'
-import { computed, nextTick, reactive } from 'vue'
+import { computed, nextTick } from 'vue'
+import { useToggle } from '@vueuse/core'
 import { type AppSDK } from '../sdk'
 
 export interface AppSDKAnimationOptions {
@@ -45,6 +45,8 @@ export interface AppSDKAnimation {
   enable: Fn<[once?: boolean]>
   /**
    * 禁用动画，默认单次禁用，在切换路由后还原启用状态
+   *
+   * ***注意：禁用时需要设置 Transition.css 为 false，否则会影响切换效果***
    */
   disable: NoopFn
 }
@@ -52,68 +54,45 @@ export interface AppSDKAnimation {
 /**
  * 创建动画管理器插件
  */
-export function createAnimationPlugin(options?: AppSDKAnimationOptions) {
+export function createAnimationPlugin(options: AppSDKAnimationOptions = {}) {
   return (sdk: AppSDK) => {
-    const hooks = sdk.hooks
-    const router = sdk.router
+    const {
+      enabled: rawEnabled = true,
+      valueForward = 'forward',
+      valueBackward = 'backward',
+    } = options
+    const { router, hooks } = sdk
 
-    // 合并配置项
-    const opts = assign(
-      {
-        enabled: true,
-        valueForward: 'forward',
-        valueBackward: 'backward',
-      } as AppSDKAnimationOptions,
-      options,
-    ) as Required<AppSDKAnimationOptions>
-
-    // 还原启用状态开关
-    let isAllowRevert = true
-    function allowRevert(state: boolean) {
-      isAllowRevert = !!state
-    }
-
-    router.afterEach(() => {
-      if (isAllowRevert) nextTick(() => toggle(opts.enabled))
+    // 当前路由是否为前进状态
+    const [isForward, toggleForward] = useToggle(true)
+    // 是否启用动画
+    const [enabled, toggleEnabled] = useToggle(rawEnabled)
+    // 动画名称
+    const animationName = computed(() => {
+      return enabled.value ? (isForward.value ? valueForward : valueBackward) : undefined
     })
 
-    // 创建内部状态
-    const state = reactive({
-      // 当前路由是否为前进状态
-      isForward: true,
-      // 是否启用动画
-      enabled: opts.enabled,
-    })
-
-    // 处理内部状态
+    // 识别前进或后退
     hooks.hook('sdk:router:direction', (direction) => {
-      state.isForward = direction !== 'backward'
+      toggleForward(direction !== 'backward')
     })
 
-    // 动态计算动画名称
-    const name = computed(() => {
-      return state.enabled ? (state.isForward ? opts.valueForward : opts.valueBackward) : undefined
+    // 是否允许还原动画
+    let isAllowRevert = true
+    router.afterEach(() => {
+      // 路由跳转结束后还原启用状态
+      if (isAllowRevert) nextTick(() => toggleEnabled(rawEnabled))
     })
-
-    function toggle(value = !state.enabled) {
-      state.enabled = value
-    }
-
-    function enable() {
-      toggle(true)
-    }
-
-    function disable() {
-      toggle(false)
-    }
 
     sdk.animation = {
-      enabled: computed(() => state.enabled),
-      name,
-      allowRevert,
-      toggle,
-      enable,
-      disable,
+      enabled: computed(() => enabled.value),
+      name: animationName,
+      allowRevert: (value: boolean) => {
+        isAllowRevert = !!value
+      },
+      toggle: toggleEnabled,
+      enable: () => toggleEnabled(true),
+      disable: () => toggleEnabled(false),
     }
   }
 }

@@ -16,20 +16,23 @@ pnpm add vue vue-router vue-app-sdk
 // plugins/sdk.ts
 import { createAppSDK } from 'vue-app-sdk'
 
-export const sdk = createAppSDK()
+export const sdk = createAppSDK({
+  // ...
+})
 ```
 
 ```ts
 // main.ts
 import { createApp } from 'vue'
+import { router } from 'router/index'
 import { sdk } from 'plugins/sdk'
 import App from './App.vue'
 
 const app = createApp(App)
 
-app.use(sdk, {
-  // ...
-})
+// 必须先安装路由器再安装 SDK
+app.use(router)
+app.use(sdk)
 
 app.mount('#app')
 ```
@@ -50,13 +53,15 @@ const sdk = useAppSDK()
 // ...
 import { createAnimationPlugin } from 'vue-app-sdk/plugins/animation'
 
-const sdk = createAppSDK()
-
-// 安装转场动画插件
-sdk.use(createAnimationPlugin({
-  valueForward: 'forward',
-  valueBackward: 'backward',
-}))
+const sdk = createAppSDK({
+  plugins: [
+    // 注册转场动画插件
+    createAnimationPlugin({
+      valueForward: 'forward',
+      valueBackward: 'backward',
+    })
+  ]
+})
 ```
 
 ```html
@@ -124,3 +129,9 @@ export function createMyPlugin(): AppSDKPlugin {
   }
 }
 ```
+
+## 迁移至 v1.x
+
+- 更改配置项传入方式 `app.use(sdk, {})` 为 createAppSDK({})
+- 更改插件注册方式 `sdk.use(plugin)` 为 `createAppSDK({ plugins: [plugin] })`
+- 移除 `sdk:mount`、`sdk:unmount` 事件

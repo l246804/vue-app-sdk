@@ -1,8 +1,7 @@
-import type { AwaitableFn, Fn } from '@rhao/types-base'
-import { assign } from 'lodash-unified'
+import type { AwaitableFn, Fn, NoopFn } from '@rhao/types-base'
 import type { Ref } from 'vue'
 import { nextTick, shallowRef } from 'vue'
-import type { RouteRecordNormalized } from 'vue-router'
+import { type RouteRecordNormalized, isNavigationFailure } from 'vue-router'
 import { type AppSDKPlugin } from '../sdk'
 
 export interface KeepAliveOptions {
@@ -61,6 +60,10 @@ export interface AppSDKKeepAlive {
    */
   refreshCache: Fn<[name: string]>
   /**
+   * 清除所有缓存
+   */
+  clearCache: NoopFn
+  /**
    * 根据路由添加缓存
    */
   addCacheWithRoute: Fn<[route: RouteRecordNormalized]>
@@ -81,24 +84,20 @@ function getComponentNameByRoute(route: RouteRecordNormalized) {
   return comp?.name || comp?.__name || ''
 }
 
-export function createKeepAlivePlugin(options?: KeepAliveOptions): AppSDKPlugin {
+export function createKeepAlivePlugin(options: KeepAliveOptions = {}): AppSDKPlugin {
   return (sdk) => {
-    // 合并配置项
-    const opts = assign(
-      {
-        autoCollectAndClean: true,
-        beforeAddWithRoute: () => true,
-        beforeRemoveWithRoute: () => true,
-      } as KeepAliveOptions,
-      options,
-    ) as Required<KeepAliveOptions>
+    const {
+      autoCollectAndClean = true,
+      beforeAddWithRoute = () => true,
+      beforeRemoveWithRoute = () => true,
+    } = options
+    const { router, hooks } = sdk
 
-    const router = sdk.router
-    const hooks = sdk.hooks
+    // 缓存集合
     const caches = shallowRef<string[]>([])
 
     // 自动收集和清理缓存
-    if (opts.autoCollectAndClean) {
+    if (autoCollectAndClean) {
       let isBackward = false
       hooks.hook('sdk:router:direction', (direction) => {
         isBackward = direction === 'backward'
@@ -110,25 +109,25 @@ export function createKeepAlivePlugin(options?: KeepAliveOptions): AppSDKPlugin 
       })
 
       router.afterEach(async (to, _, failure) => {
-        if (!failure) await Promise.all(to.matched.map(addCacheWithRoute))
+        if (!isNavigationFailure(failure)) await Promise.all(to.matched.map(addCacheWithRoute))
       })
     }
 
     async function addCacheWithRoute(route: RouteRecordNormalized) {
       const name = getComponentNameByRoute(route)
-      const valid = await opts.beforeAddWithRoute(route)
+      const valid = await beforeAddWithRoute(route)
       valid && addCache(name)
     }
 
     async function removeCacheWithRoute(route: RouteRecordNormalized) {
       const name = getComponentNameByRoute(route)
-      const valid = await opts.beforeRemoveWithRoute(route)
+      const valid = await beforeRemoveWithRoute(route)
       valid && removeCache(name)
     }
 
     async function refreshCacheWithRoute(route: RouteRecordNormalized) {
-      const allowAdd = await opts.beforeAddWithRoute(route)
-      const allowRemove = await opts.beforeRemoveWithRoute(route)
+      const allowAdd = await beforeAddWithRoute(route)
+      const allowRemove = await beforeRemoveWithRoute(route)
       if (allowAdd && allowRemove) {
         const name = getComponentNameByRoute(route)
         refreshCache(name)
@@ -151,12 +150,22 @@ export function createKeepAlivePlugin(options?: KeepAliveOptions): AppSDKPlugin 
       })
     }
 
+    function clearCache() {
+      caches.value = []
+    }
+
+    // 注册清理事件
+    hooks.hook('sdk:cleanup', () => {
+      clearCache()
+    })
+
     sdk.keepAlive = {
       caches,
 
       addCache,
       removeCache,
       refreshCache,
+      clearCache,
 
       addCacheWithRoute,
       removeCacheWithRoute,
@@ -167,6 +176,9 @@ export function createKeepAlivePlugin(options?: KeepAliveOptions): AppSDKPlugin 
 
 declare module 'vue-app-sdk' {
   export interface AppSDK {
+    /**
+     * KeepAlive 管理器
+     */
     keepAlive: AppSDKKeepAlive
   }
 }
