@@ -6,11 +6,11 @@ settings:
 
 dependencies:
   '@rhao/lodash-x':
+    specifier: ^0.5.2
+    version: 0.5.2(typescript@5.2.2)
+  '@rhao/types-base':
     specifier: ^0.3.0
     version: 0.3.0(typescript@5.2.2)
-  '@rhao/types-base':
-    specifier: ^0.2.1
-    version: 0.2.1(typescript@5.2.2)
   '@types/lodash':
     specifier: ^4.14.197
     version: 4.14.197
@@ -1290,11 +1290,11 @@ packages:
       semver: 7.5.1
     dev: true
 
-  /@rhao/lodash-x@0.3.0(typescript@5.2.2):
-    resolution: {integrity: sha512-dEP/gmrhwSzPZ+nQuJw8neWsKg3LgNJjXPcTaDGRytCJuS93aRPIXKCFAlrQFPzNNqxoqJfKZQYs2umGQC2VZg==}
+  /@rhao/lodash-x@0.5.2(typescript@5.2.2):
+    resolution: {integrity: sha512-QC4vD+ezkm02CrKO6ATEKABwIWSnD0HqbR/sajOAmq1s4bghsUPSZecPd3omXeLFeVq3c121GWRzuZoq3dco/w==}
     engines: {node: '>=14'}
     dependencies:
-      '@rhao/types-base': 0.1.3(typescript@5.2.2)
+      '@rhao/types-base': 0.2.1(typescript@5.2.2)
       '@types/lodash': 4.14.197
       '@types/lodash-es': 4.17.8
       lodash: 4.17.21
@@ -1322,8 +1322,8 @@ packages:
       - inquirer
     dev: true
 
-  /@rhao/types-base@0.1.3(typescript@5.2.2):
-    resolution: {integrity: sha512-86vT+gCx28NFrG5Aeh0O7a9Dc4OXd83BW9DQibvYCkxxw7+HIWoCLOiHLxBINQrNPA1LowTsRW+5xxxyHZvrsQ==}
+  /@rhao/types-base@0.2.1(typescript@5.2.2):
+    resolution: {integrity: sha512-ceN+L1YdLG22RvNx/avCX6A+Gzmk+s282at7btD7FSBIaPFO8bBWJJElltDVkKDYlpeqtm1Ru56fLufVNO/V2w==}
     engines: {node: '>=14'}
     peerDependencies:
       typescript: '>=5'
@@ -1331,8 +1331,8 @@ packages:
       typescript: 5.2.2
     dev: false
 
-  /@rhao/types-base@0.2.1(typescript@5.2.2):
-    resolution: {integrity: sha512-ceN+L1YdLG22RvNx/avCX6A+Gzmk+s282at7btD7FSBIaPFO8bBWJJElltDVkKDYlpeqtm1Ru56fLufVNO/V2w==}
+  /@rhao/types-base@0.3.0(typescript@5.2.2):
+    resolution: {integrity: sha512-yUd/wFJoBnBnt856vaUfgUzgJwLQcQbk5WwmaMTLxWrj+IRGMlNcQYOzoKJ/FdfuAO0hdwQ1VD3dl5Yzw8CTRA==}
     engines: {node: '>=14'}
     peerDependencies:
       typescript: '>=5'

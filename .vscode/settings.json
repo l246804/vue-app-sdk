@@ -145,6 +145,7 @@
     "infile",
     "mkdist",
     "plopfile",
+    "unplugin",
     "vueuse"
   ]
 }

@@ -58,8 +58,8 @@
     "vue-router": ">=4"
   },
   "dependencies": {
-    "@rhao/lodash-x": "^0.3.0",
-    "@rhao/types-base": "^0.2.1",
+    "@rhao/lodash-x": "^0.5.2",
+    "@rhao/types-base": "^0.3.0",
     "@types/lodash": "^4.14.197",
     "@types/lodash-es": "^4.17.8",
     "@vueuse/core": "^10.4.1",
