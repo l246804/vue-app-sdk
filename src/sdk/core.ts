@@ -1,50 +1,9 @@
 import { isFunction } from 'lodash-unified'
 import { inject } from 'vue'
 import type { App, InjectionKey } from 'vue'
-import { type Router } from 'vue-router'
-import type { Fn } from '@rhao/types-base'
-import { type AppSDKHooks, createHooks } from './hooks'
-import { type AppSDKRouterOptions, extendRouter } from './extendRouter'
-
-export interface AppSDKOptions {
-  /**
-   * 扩展路由器配置项
-   */
-  router?: AppSDKRouterOptions
-  /**
-   * 扩展插件列表
-   */
-  plugins?: AppSDKPlugin[]
-}
-
-export interface AppSDK {
-  /**
-   * 配置项
-   */
-  readonly options: AppSDKOptions
-  /**
-   * Vue 实例
-   */
-  readonly app: App
-  /**
-   * Vue 路由器
-   */
-  readonly router: Router
-  /**
-   * hooks 管理器
-   */
-  readonly hooks: AppSDKHooks
-  /**
-   * 集中清理缓存和旧数据资源，不会干扰到 AppSDK 及插件功能正常运行
-   */
-  cleanup(): void
-  /**
-   * 自动被 `app.use` 调用，调用后将挂载 AppSDK 并初始化插件运行
-   */
-  install(app: App): void
-}
-
-export type AppSDKPlugin = Fn<[sdk: AppSDK]>
+import { createHooks } from './hooks'
+import type { AppSDK, AppSDKOptions, AppSDKPluginFunction, AppSDKPluginObject } from './types'
+import { enhanceRouter } from './enhanceRouter'
 
 export const APP_SDK_KEY: InjectionKey<AppSDK> = Symbol('App SDK')
 
@@ -100,8 +59,8 @@ export function createAppSDK(options: AppSDKOptions = {}) {
       props.$appSDK = sdk
       app.provide(APP_SDK_KEY, sdk)
 
-      // 扩展路由器
-      extendRouter(sdk, sdk.options.router)
+      // 增强路由器
+      enhanceRouter(sdk, sdk.options.router)
 
       // 初始化插件运行
       runPlugins()
@@ -109,11 +68,14 @@ export function createAppSDK(options: AppSDKOptions = {}) {
   }
 
   function runPlugins() {
-    plugins.forEach((plugin) => isFunction(plugin) && plugin(sdk as AppSDK))
+    plugins.forEach((plugin) => {
+      const install: AppSDKPluginFunction = (plugin as AppSDKPluginObject)?.install || plugin
+      isFunction(install) && install(sdk as AppSDK)
+    })
   }
 
   function cleanup() {
-    hooks.callHookParallel('sdk:cleanup')
+    hooks.callHookSync('sdk:cleanup')
   }
 
   return sdk as Omit<AppSDK, 'app' | 'router'>

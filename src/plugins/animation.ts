@@ -1,107 +1,12 @@
-import type { Fn, NoopFn } from '@rhao/types-base'
-import type { ComputedRef } from 'vue'
-import { computed, nextTick } from 'vue'
-import { useToggle } from '@vueuse/core'
-import { type AppSDK } from '../sdk'
-
-export interface AppSDKAnimationOptions {
-  /**
-   * 默认是否启用动画，路由切换后允许还原为该值
-   * @default true
-   */
-  enabled?: boolean
-  /**
-   * 路由前进动画名称
-   * @default 'forward'
-   */
-  valueForward?: string
-  /**
-   * 路由后退动画名称
-   * @default 'backward'
-   */
-  valueBackward?: string
-}
-
-export interface AppSDKAnimation {
-  /**
-   * 动画启用状态
-   */
-  enabled: ComputedRef<boolean>
-  /**
-   * 动画名称
-   */
-  name: ComputedRef<string | undefined>
-  /**
-   * 是否允许在切换路由后还原启用状态，默认允许，可调用此函数更改允许状态
-   */
-  allowRevert: Fn<[state: boolean]>
-  /**
-   * 切换动画启用状态，默认单次切换，在切换路由后还原启用状态
-   */
-  toggle: Fn<[state?: boolean, once?: boolean]>
-  /**
-   * 启用动画，默认单次启用，在切换路由后还原启用状态
-   */
-  enable: Fn<[once?: boolean]>
-  /**
-   * 禁用动画，默认单次禁用，在切换路由后还原启用状态
-   *
-   * ***注意：禁用时需要设置 Transition.css 为 false，否则会影响切换效果***
-   */
-  disable: NoopFn
-}
+import type { AnimationOptions } from '../animation'
+import { createAnimation } from '../animation'
 
 /**
  * 创建动画管理器插件
+ * @deprecated "createAnimationPlugin" has been deprecated, please use "createAnimation"
  */
-export function createAnimationPlugin(options: AppSDKAnimationOptions = {}) {
-  return (sdk: AppSDK) => {
-    const {
-      enabled: rawEnabled = true,
-      valueForward = 'forward',
-      valueBackward = 'backward',
-    } = options
-    const { router, hooks } = sdk
-
-    // 当前路由是否为前进状态
-    const [isForward, toggleForward] = useToggle(true)
-    // 是否启用动画
-    const [enabled, toggleEnabled] = useToggle(rawEnabled)
-    // 动画名称
-    const animationName = computed(() => {
-      return enabled.value ? (isForward.value ? valueForward : valueBackward) : undefined
-    })
-
-    // 识别前进或后退
-    hooks.hook('sdk:router:direction', (direction) => {
-      toggleForward(direction !== 'backward')
-    })
-
-    // 是否允许还原动画
-    let isAllowRevert = true
-    router.afterEach(() => {
-      // 路由跳转结束后还原启用状态
-      if (isAllowRevert) nextTick(() => toggleEnabled(rawEnabled))
-    })
-
-    sdk.animation = {
-      enabled: computed(() => enabled.value),
-      name: animationName,
-      allowRevert: (value: boolean) => {
-        isAllowRevert = !!value
-      },
-      toggle: toggleEnabled,
-      enable: () => toggleEnabled(true),
-      disable: () => toggleEnabled(false),
-    }
-  }
-}
-
-declare module 'vue-app-sdk' {
-  export interface AppSDK {
-    /**
-     * 导航动画管理器
-     */
-    animation: AppSDKAnimation
-  }
+export function createAnimationPlugin(options: AnimationOptions = {}) {
+  const animation = createAnimation(options)
+  console.warn('[VueAppSDK Animation] - "createAnimationPlugin" has been deprecated, please use "createAnimation"')
+  return animation.install
 }
