@@ -78,7 +78,7 @@ export interface BaseMetadata {
   /**
    * 标题
    */
-  title: string
+  title: string | Recordable<string>
   /**
    * 图标
    */

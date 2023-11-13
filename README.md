@@ -130,6 +130,17 @@ export function createMyPlugin(): AppSDKPlugin {
 }
 ```
 
+## 热更新时内存引用失效
+
+引入下面的函数用于修复 `vite` 开发时部分文件热更新可能导致内存引用丢失问题。
+
+```ts
+// sdk.ts
+import { fixHotUpdateVite } from '@neucloud/vue-app-sdk'
+
+fixHotUpdateVite()
+```
+
 ## 迁移至 v1.x
 
 由于部分原因无法发布 v1.x 版本，故此请直接查看 v2.x 迁移步骤。
