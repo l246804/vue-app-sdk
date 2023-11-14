@@ -66,7 +66,8 @@
     "hookable": "^5.5.3",
     "lodash": "^4.17.21",
     "lodash-es": "^4.17.21",
-    "lodash-unified": "^1.0.3"
+    "lodash-unified": "^1.0.3",
+    "vue-i18n": "^9.6.5"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^0.41.0",

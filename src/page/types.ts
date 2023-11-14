@@ -2,6 +2,7 @@
 import type { Awaitable, Fn, PromiseFn, Recordable } from '@rhao/types-base'
 import type { RouteComponent, RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
 import type { ComputedRef, MaybeRefOrGetter } from 'vue'
+import type { I18n } from 'vue-i18n'
 import type { AppSDKPluginObject } from '../sdk'
 import type { KeepAliveOptions } from '../keepAlive'
 
@@ -76,7 +77,24 @@ export interface BaseMetadata {
    */
   file?: string
   /**
-   * 标题
+   * 标题，支持多语言格式，配合 `localeText` 使用更佳
+   *
+   * @example
+   * ```ts
+   * // page.ts
+   * {
+   *   // ...
+   *   title: '页面1' // 普通文本格式
+   *   // title: { en: 'Page1', 'zh-cn': '页面1' } // 多语言格式
+   * }
+   *
+   * // menu.ts
+   * // 根据 i18n.global.locale 获取当前语言标题
+   * console.log(localeText(page.title)) // '页面1'
+   *
+   * // 获取指定语言标题
+   * console.log(localeText(page.title, 'en')) // 'Page1'
+   * ``
    */
   title: string | Recordable<string>
   /**
@@ -130,8 +148,7 @@ export interface PCMetadata extends BaseMetadata {
 /**
  * Mobile 页面元数据
  */
-export interface MobileMetadata extends BaseMetadata {
-}
+export interface MobileMetadata extends BaseMetadata {}
 
 /**
  * 页面元数据
@@ -450,3 +467,16 @@ export interface Page<M extends AppMode> extends AppSDKPluginObject {
     externalWindow: Window | null
   }
 }
+
+/**
+ * I18n 实例
+ */
+export type I18nInstance = I18n
+/**
+ * 传统的 i18n
+ */
+export type LegacyI18n = I18n<{}, {}, {}, string, true>
+/**
+ * 现代的 i18n
+ */
+export type ModernI18n = I18n<{}, {}, {}, string, false>

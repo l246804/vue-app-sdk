@@ -1,7 +1,7 @@
 import type { Fn, Recordable } from '@rhao/types-base'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
 import { bigCamelCase, forEachTree, toArrayTree, toTreeArray } from '@rhao/lodash-x'
-import { cloneDeep, isFunction, isObject, isObjectLike } from 'lodash-unified'
+import { cloneDeep, isFunction, isObject, isObjectLike, isString } from 'lodash-unified'
 import type { MaybeRefOrGetter } from 'vue'
 import { computed, toValue } from 'vue'
 import type { KeepAliveOptions } from '../keepAlive'
@@ -10,8 +10,11 @@ import { createSDKRef } from '../utils'
 import type {
   AppMode,
   BaseMetadata,
+  I18nInstance,
+  LegacyI18n,
   Metadata,
   MetadataWithChildren,
+  ModernI18n,
   Page,
   PageOptions,
   RoleListType,
@@ -24,6 +27,42 @@ export function normalizePath(child: string, parent = '/') {
   return child
     ? `${child.startsWith('/') ? '' : parent.replace(/\/+$/, '')}/${child.replace(/^\/+/, '')}`
     : parent
+}
+
+/**
+ * 根据 i18n 实例创建本地化文本函数，用于处理动态多语言文本
+ *
+ * @example
+ * ```ts
+ * // locale.ts
+ * export const localeText = createLocaleText(i18n)
+ *
+ * // menu.ts
+ * const menu = { title: '菜单' }
+ * localeText(menu.title) // '菜单'
+ *
+ * const menu = { title: { 'zh-cn': '菜单', en: 'Menu' } }
+ * localeText(menu.title) // i18n.global.locale 为 `zh-cn` 时为 '菜单'，`en` 时为 'Menu'
+ *
+ * // alert.ts
+ * alert(localeText({ 'zh-cn': '这是中文警告！', en: 'This is a warning in English!' }))
+ *
+ * // menu.vue
+ * const menu = { title: { 'zh-cn': '菜单', en: 'Menu' } }
+ * const menuTitle = computed(() => localeText(menu.title)) // 支持响应式动态变更
+ * ```
+ */
+export function createLocaleText(i18n: I18nInstance) {
+  return function localeText(message: string | Recordable<string> = '', locale = '') {
+    if (isString(message) || !message) return message
+    if (!locale) {
+      locale
+        = i18n.mode === 'legacy'
+          ? (i18n as LegacyI18n).global.locale
+          : (i18n as ModernI18n).global.locale.value
+    }
+    return message[locale]
+  }
 }
 
 const defaultTreeOptions = {
