@@ -1,5 +1,31 @@
 # Changelog
 
+## [2.2.0](https://github.com/l246804/vue-app-sdk/compare/v2.0.0...v2.2.0) (2023-11-14)
+
+
+### Features
+
+* 🎸 add BetterScroller ([7942a4c](https://github.com/l246804/vue-app-sdk/commit/7942a4c236064c53d60889e7c953f04c78218cac))
+* 🎸 add Page ([4603214](https://github.com/l246804/vue-app-sdk/commit/4603214f61bcf2fd1424b6d658813de83bda1607))
+* 🎸 add Tabs ([61664e8](https://github.com/l246804/vue-app-sdk/commit/61664e8db64505e397d9a5b1445144750e49a50b))
+* 🎸 add Token ([7cf60b7](https://github.com/l246804/vue-app-sdk/commit/7cf60b7aba5bc2d41bf3dacd63691cb535d3aea4))
+* 🎸 Page add createLocaleText ([7c3fba8](https://github.com/l246804/vue-app-sdk/commit/7c3fba8a49ee008e13b2468d4a83227d663ca9f8))
+
+
+### Chores
+
+* 🤖 增加修复 vite 开发热更新导致内存引用丢失函数 ([95bd56d](https://github.com/l246804/vue-app-sdk/commit/95bd56dd1f9f47136d11660805ae41f663d315ab))
+
+
+### Refactors
+
+* 💡 重构代码结构，优化部分功能特性 ([2abcfcf](https://github.com/l246804/vue-app-sdk/commit/2abcfcf457cccdb214e83d2aa096d6e4aad55a35))
+
+
+### Docs
+
+* ✏️ 补充 README.md ([fe298ea](https://github.com/l246804/vue-app-sdk/commit/fe298eae9daeb7246251ab51161f1314da631c42))
+
 ## [2.1.1](https://github.com/l246804/vue-app-sdk/compare/v2.0.0...v2.1.1) (2023-11-13)
 
 
