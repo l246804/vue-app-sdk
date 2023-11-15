@@ -171,7 +171,7 @@ export type MetadataWithChildren<M extends AppMode> = Metadata<M> & {
  * @example
  * ```ts
  * // page.d.ts
- * declare module 'vue-app-sdk/page' {
+ * declare module '@neucloud/vue-app-sdk/page' {
  *   interface MenuProps {
  *     // props in here...
  *     badge?: boolean
@@ -340,6 +340,15 @@ export interface Page<M extends AppMode> extends AppSDKPluginObject {
    */
   toMenus: Fn<[pages: Metadata<M>[]], MetadataWithChildren<M>[]>
   /**
+   * 判断页面是否有授权
+   *
+   * @example
+   * ```ts
+   * hasAuth({ name: 'page1', roleList: '*', // ... }, roleList) // true
+   * ```
+   */
+  hasAuth: Fn<[page: Metadata<M>, roleList: RoleListType], boolean>
+  /**
    * 过滤权限页面元数据列表
    *
    * @example
@@ -404,6 +413,13 @@ export interface Page<M extends AppMode> extends AppSDKPluginObject {
          */
         childrenKey?: string
         /**
+         * 过滤权限时是否子级优先
+         * - `true`: 子级存在权限时父级必定存在
+         * - `false`: 父级无权限时子级必定不存在
+         * @default true
+         */
+        childrenFirst?: boolean
+        /**
          * 转换 `page.path` 为绝对路径
          * @default options.convertPathToAbsolute
          */
@@ -428,6 +444,10 @@ export interface Page<M extends AppMode> extends AppSDKPluginObject {
        */
       flattenPages: ComputedRef<Metadata<M>[]>
       /**
+       * 树形元数据列表
+       */
+      treePages: ComputedRef<MetadataWithChildren<M>[]>
+      /**
        * 过滤权限后的扁平化的元数据列表
        */
       authPages: ComputedRef<Metadata<M>[]>
@@ -438,15 +458,15 @@ export interface Page<M extends AppMode> extends AppSDKPluginObject {
       /**
        * 过滤权限后的树形元数据列表
        */
-      treeAuthPages: ComputedRef<MetadataWithChildren<M>[]>
+      authTreePages: ComputedRef<MetadataWithChildren<M>[]>
       /**
        * 过滤权限后的树形元数据链路映射
        * @example
        * ```ts
-       * const breadcrumbList = computed(() => treeLinkMap.value[route.meta.id] || [])
+       * const breadcrumbList = computed(() => authTreeLinkMap.value[route.meta.id] || [])
        * ```
        */
-      treeLinkMap: ComputedRef<Recordable<MetadataWithChildren<M>[] | undefined>>
+      authTreeLinkMap: ComputedRef<Recordable<MetadataWithChildren<M>[] | undefined>>
       /**
        * 过滤权限后的树形菜单
        */

@@ -1,6 +1,13 @@
 import type { Fn, Recordable } from '@rhao/types-base'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
-import { bigCamelCase, forEachTree, toArrayTree, toTreeArray } from '@rhao/lodash-x'
+import {
+  bigCamelCase,
+  findTree,
+  forEachTree,
+  mapTree,
+  toArrayTree,
+  toTreeArray,
+} from '@rhao/lodash-x'
 import { cloneDeep, isFunction, isObject, isObjectLike, isString } from 'lodash-unified'
 import type { MaybeRefOrGetter } from 'vue'
 import { computed, toValue } from 'vue'
@@ -236,6 +243,21 @@ export function createPage<O extends PageOptions, M extends AppMode = O['mode']>
   }
 
   /**
+   * 判断页面是否有授权
+   *
+   * @example
+   * ```ts
+   * hasAuth({ name: 'page1', roleList: '*', // ... }, roleList) // true
+   * ```
+   */
+  function hasAuth(page: InternalMetadata, roleList: RoleListType) {
+    if (roleList === '*') return true
+    const pageRoleList = page.roleList || []
+    if (strictRole && (roleList.length === 0 || pageRoleList.length === 0)) return false
+    return pageRoleList === '*' || pageRoleList.some((role) => roleList.includes(role))
+  }
+
+  /**
    * 过滤权限页面元数据列表
    *
    * @example
@@ -273,12 +295,7 @@ export function createPage<O extends PageOptions, M extends AppMode = O['mode']>
   function filterAuthPages(pages: InternalMetadata[], roleList: RoleListType) {
     if (roleList === '*') return pages
     if (strictRole && roleList.length === 0) return []
-
-    const roleListSet = new Set(roleList)
-    return pages.filter((page) => {
-      if (strictRole && !page.roleList?.length) return false
-      return page.roleList === '*' || page.roleList!.some((role) => roleListSet.has(role))
-    })
+    return pages.filter((page) => hasAuth(page, roleList))
   }
 
   /**
@@ -338,6 +355,13 @@ export function createPage<O extends PageOptions, M extends AppMode = O['mode']>
        */
       childrenKey?: string
       /**
+       * 过滤权限时是否子级优先
+       * - `true`: 子级存在权限时父级必定存在
+       * - `false`: 父级无权限时子级必定不存在
+       * @default true
+       */
+      childrenFirst?: boolean
+      /**
        * 转换 `page.path` 为绝对路径
        * @default options.convertPathToAbsolute
        */
@@ -360,6 +384,7 @@ export function createPage<O extends PageOptions, M extends AppMode = O['mode']>
       format = 'list',
       convertPathToAbsolute = defaultConvertPathToAbsolute,
       childrenKey = defaultTreeOptions.childrenKey,
+      childrenFirst = true,
       roleList = [],
       resolveActiveMenu = (route) => route.meta.activeMenu || route.meta.name || '',
     } = options
@@ -370,16 +395,69 @@ export function createPage<O extends PageOptions, M extends AppMode = O['mode']>
      * 扁平化的元数据列表
      */
     const flattenPages = computed(() => {
-      const _pages = toValue(pages)
-      if (format === 'list') return _pages
-      return toFlattenPages(_pages, { convertPathToAbsolute, childrenKey })
+      const _pages = cloneDeep(toValue(pages))
+      if (format === 'list') {
+        if (!convertPathToAbsolute) return _pages
+        toTreePages(_pages, { clone: false, convertPathToAbsolute: true })
+        return _pages.map((page) => {
+          delete page[defaultTreeOptions.childrenKey]
+          return page
+        }) as InternalMetadata[]
+      }
+      return toFlattenPages(_pages, { convertPathToAbsolute, childrenKey, clone: true })
+    })
+
+    /**
+     * 树形元数据列表
+     */
+    const treePages = computed(() => {
+      return toTreePages(flattenPages.value, { convertPathToAbsolute: false, clone: true })
+    })
+
+    /**
+     * 过滤权限后的树形元数据列表
+     */
+    const authTreePages = computed(() => {
+      if (!childrenFirst) {
+        return toTreePages(filterAuthPages(flattenPages.value, toValue(roleList)), {
+          convertPathToAbsolute: false,
+          clone: true,
+        })
+      }
+
+      const tree = cloneDeep(treePages.value)
+      const _hasAuth = (page: InternalMetadata) => hasAuth(page, toValue(roleList))
+
+      // 遍历树置空无权限数据
+      forEachTree(tree, (page, index, parent) => {
+        const setNull = () => {
+          const list = parent?.children || tree
+          list[index] = null as any
+        }
+
+        const children = page.children || []
+        if (children.length === 0) return !_hasAuth(page) && setNull()
+
+        const find = findTree(children, _hasAuth)
+        if (!find) setNull()
+      })
+
+      // 遍历去除空数据
+      return mapTree(tree.filter(Boolean), (page) => {
+        if (page.children) page.children = page.children.filter(Boolean)
+        return page
+      })
     })
 
     /**
      * 过滤权限后的扁平化的元数据列表
      */
     const authPages = computed(() => {
-      return filterAuthPages(toValue(flattenPages), toValue(roleList))
+      return toFlattenPages(authTreePages.value, {
+        convertPathToAbsolute: false,
+        childrenKey: defaultTreeOptions.childrenKey,
+        clone: true,
+      })
     })
 
     /**
@@ -396,23 +474,16 @@ export function createPage<O extends PageOptions, M extends AppMode = O['mode']>
     })
 
     /**
-     * 过滤权限后的树形元数据列表
-     */
-    const treeAuthPages = computed(() => {
-      return toTreePages(authPages.value, { convertPathToAbsolute, clone: true })
-    })
-
-    /**
      * 过滤权限后的树形元数据链路映射
      * @example
      * ```ts
-     * const breadcrumbList = computed(() => treeLinkMap.value[route.meta.id] || [])
+     * const breadcrumbList = computed(() => authTreeLinkMap.value[route.meta.id] || [])
      * ```
      */
-    const treeLinkMap = computed(() => {
+    const authTreeLinkMap = computed(() => {
       const map: Recordable<InternalMetadataWithChildren[]> = {}
       forEachTree(
-        treeAuthPages.value,
+        authTreePages.value,
         (page, _, __, ___, links) => {
           map[page.id] = links
         },
@@ -436,10 +507,11 @@ export function createPage<O extends PageOptions, M extends AppMode = O['mode']>
 
     return {
       flattenPages,
+      treePages,
       authPages,
       authPageMap,
-      treeAuthPages,
-      treeLinkMap,
+      authTreePages,
+      authTreeLinkMap,
       menus,
       activeMenu,
     }
@@ -495,6 +567,7 @@ export function createPage<O extends PageOptions, M extends AppMode = O['mode']>
     toFlattenPages,
     toTreePages,
     toMenus,
+    hasAuth,
     filterAuthPages,
     pageToRoute,
     createStates,
