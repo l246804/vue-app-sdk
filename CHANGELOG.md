@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.3.0](https://github.com/l246804/vue-app-sdk/compare/v2.2.0...v2.3.0) (2023-11-15)
+
+
+### Features
+
+* 🎸 add FeatureAuth ([e494a86](https://github.com/l246804/vue-app-sdk/commit/e494a86f479e229e450bf4ce650a231324b0784b))
+* 🎸 Page.createStates 新增权限过滤优先级配置 ([cda0428](https://github.com/l246804/vue-app-sdk/commit/cda0428343e0ded44e9ee5417f8c03abd38a1397))
+
 ## [2.2.0](https://github.com/l246804/vue-app-sdk/compare/v2.0.0...v2.2.0) (2023-11-14)
 
 
