@@ -73,6 +73,6 @@ if (import.meta.env.DEV) fixHotUpdateVite()
 
 ## 迁移至 v2.x
 
-- 更改配置项传入方式 `app.use(sdk, {})` 为 createAppSDK({})
+- 更改配置项传入方式 `app.use(sdk, {})` 为 `createAppSDK({})`
 - 更改插件注册方式 `sdk.use(plugin)` 为 `createAppSDK({ plugins: [plugin] })`
 - 移除 `sdk:mount`、`sdk:unmount` 事件
