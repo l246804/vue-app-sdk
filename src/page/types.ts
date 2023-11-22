@@ -12,25 +12,17 @@ import type { KeepAliveOptions } from '../keepAlive'
 type IdType = string | number
 
 /**
- * 应用模式，不同应用模式会有细微差异
- * - `pc`: 电脑端应用
- * - `mobile`: 移动端应用
+ * 应用模式
  */
 export type AppMode = 'pc' | 'mobile'
 
 /**
  * 角色权限列表类型
- * - `*`: 任意角色权限
- * - `string[]`: 对应角色权限列表
  */
 export type RoleListType = '*' | string[]
 
 /**
  * 页面缓存模式
- * - `auto`: 自动识别前进后退进行缓存和删除，开启后 `isKeepAlive` 属性将无效
- * - `manual`: 手动设置页面是否需要缓存，将依赖于 `isKeepAlive` 属性
- *
- * ***注意：`mobile` 模式固定为 `auto`！***
  */
 export type KeepAliveMode = 'auto' | 'manual'
 
@@ -57,7 +49,7 @@ export interface BaseMetadata {
    */
   name: string
   /**
-   * 重定页面 name
+   * 重定向页面 name
    */
   redirect?: string
   /**
@@ -111,6 +103,8 @@ export interface BaseMetadata {
   link?: string
   /**
    * 对应的角色可以访问
+   * - `*`: 任意角色权限
+   * - `string[]`: 对应角色权限列表
    */
   roleList?: RoleListType
   /**
@@ -171,7 +165,7 @@ export type MetadataWithChildren<M extends AppMode> = Metadata<M> & {
  * @example
  * ```ts
  * // page.d.ts
- * declare module '@neucloud/vue-app-sdk/page' {
+ * declare module 'vue-app-sdk/page' {
  *   interface MenuProps {
  *     // props in here...
  *     badge?: boolean
@@ -186,11 +180,19 @@ export interface MenuProps {}
 
 export interface PageOptions {
   /**
-   * 应用模式
+   * 应用模式，不同应用模式会有细微差异
+   * - `pc`: 电脑端应用
+   * - `mobile`: 移动端应用
    */
   mode: AppMode
   /**
    * 页面保活模式
+   *
+   * - `auto`: 自动识别前进后退进行缓存和删除，开启后 `isKeepAlive` 属性将无效
+   * - `manual`: 手动设置页面是否需要缓存，将依赖于 `isKeepAlive` 属性
+   *
+   * ***注意：`mobile` 模式固定为 `auto`！***
+   *
    * @default
    * ```ts
    * // mode: pc

@@ -1,6 +1,6 @@
 # `vue-app-sdk`
 
-`Vue` 应用软件开发工具包。
+一款 `Vue` 应用软件开发工具集合，自身仅基于 `vue-router` 扩展不同应用场景下的通用功能，根据实际需求安装不同插件来满足各种场景下的敏捷开发。
 
 ## 安装
 
@@ -10,23 +10,9 @@
 pnpm add vue vue-router vue-app-sdk
 ```
 
-## 基础使用
-
-```ts
-// plugins/sdk.ts
-import { createAppSDK } from 'vue-app-sdk'
-
-export const sdk = createAppSDK({
-  // ...
-})
-```
-
 ```ts
 // main.ts
-import { createApp } from 'vue'
-import { router } from 'router/index'
-import { sdk } from 'plugins/sdk'
-import App from './App.vue'
+// ...
 
 const app = createApp(App)
 
@@ -37,98 +23,38 @@ app.use(sdk)
 app.mount('#app')
 ```
 
-```html
-<!-- xxx.vue -->
-<script setup lang="ts">
-import { useAppSDK } from 'vue-app-sdk'
-
-const sdk = useAppSDK()
-</script>
-```
-
 ## 扩展 SDK
 
 ```ts
 // plugins/sdk.ts
 // ...
-import { createAnimationPlugin } from 'vue-app-sdk/plugins/animation'
+import { createAnimation } from 'vue-app-sdk'
 
 const sdk = createAppSDK({
   plugins: [
     // 注册转场动画插件
-    createAnimationPlugin({
+    createAnimation({
       valueForward: 'forward',
       valueBackward: 'backward',
-    })
+    }),
   ]
 })
 ```
 
-```html
-<!-- App.vue -->
-<script setup lang="ts">
-import { useAppSDK } from 'vue-app-sdk'
+## 功能详情
 
-const { name: transitionName, ...animationControls } = useAppSDK().animation
+[SDK - Vue 应用软件开发工具](https://github.com/l246804/vue-app-sdk/wiki/SDK)
 
-const router = useRouter()
-function replacePage() {
-  // 启用状态默认会在切换路由后还原，可通过 allowRevert 禁止还原
-  // animationControls.allowRevert(false)
-  // 需要禁用导航动画时
-  // 禁用时需要设置 Transition.css 为 false，否则会影响切换效果
-  animationControls.disable()
-  router.replace('/a')
-}
+## 内置插件
 
-function pushPage() {
-  // 除过 back() 和 go(-n) 时自动认为是前进，会采用 valueForward 动画
-  router.push('/b')
-}
-
-function backPage() {
-  // 会采用 valueBackward 动画
-  router.back()
-}
-</script>
-
-<template>
-  <RouterView v-slot="{ Component: routerComp }">
-    <Transition :name="transitionName" :css="!!transitionName">
-      <Component :is="routerComp" />
-    </Transition>
-  </RouterView>
-</template>
-
-<style scoped>
-.forward-active {
-  /* ... */
-}
-
-.backward-active {
-  /* ... */
-}
-</style>
-```
-
-## 开发插件
-
-```ts
-// myPlugin.ts
-import type { AppSDKPlugin } from 'vue-app-sdk'
-
-// 若不需要接收参数也可直接返回插件函数
-export function createMyPlugin(): AppSDKPlugin {
-  return (sdk) => {
-    // ...
-
-    // 也可不挂载
-    sdk.myPlugin = {
-      // ...
-    }
-  }
-}
-```
+- [Animation - 转场动画管理](https://github.com/l246804/vue-app-sdk/wiki/Animation)
+- [KeepAlive - 路由页面缓存管理](https://github.com/l246804/vue-app-sdk/wiki/KeepAlive)
+- [BetterScroller - 路由滚动位置管理](https://github.com/l246804/vue-app-sdk/wiki/BetterScroller)
+- [FeatureAuth - 应用功能权限](https://github.com/l246804/vue-app-sdk/wiki/FeatureAuth)
+- [Page - 前后端标准化页面数据管理](https://github.com/l246804/vue-app-sdk/wiki/Page)
+- [SSO - 单点登录管理](https://github.com/l246804/vue-app-sdk/wiki/SSO)
+- [Tabs - 标签页列表管理](https://github.com/l246804/vue-app-sdk/wiki/Tabs)
+- [Token - 应用令牌信息管理](https://github.com/l246804/vue-app-sdk/wiki/Token)
 
 ## 热更新时内存引用失效
 
@@ -136,9 +62,9 @@ export function createMyPlugin(): AppSDKPlugin {
 
 ```ts
 // sdk.ts
-import { fixHotUpdateVite } from '@neucloud/vue-app-sdk'
+import { fixHotUpdateVite } from 'vue-app-sdk'
 
-fixHotUpdateVite()
+if (import.meta.env.DEV) fixHotUpdateVite()
 ```
 
 ## 迁移至 v1.x
