@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.3.2](https://github.com/l246804/vue-app-sdk/compare/v2.3.1...v2.3.2) (2023-11-23)
+
+
+### Chores
+
+* 🤖 BetterScroller 注册 cleanup 和 backward 事件清理无效缓存 ([a37a45f](https://github.com/l246804/vue-app-sdk/commit/a37a45f103140448a9d56e8635f3dc9b70e8d421))
+
+
+### Docs
+
+* ✏️ 优化 README.md ([8570e3a](https://github.com/l246804/vue-app-sdk/commit/8570e3af54f51dc4160ff3509b6d7c805b1429e5))
+
 ## [2.3.1](https://github.com/l246804/vue-app-sdk/compare/v2.3.0...v2.3.1) (2023-11-22)
 
 
