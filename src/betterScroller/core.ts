@@ -90,6 +90,14 @@ export function createRouterScroller(options: RouterScrollBehaviorOptions) {
     trigger,
     install(sdk) {
       sdk.routerScroller = routerScroller
+
+      sdk.hooks.hook('sdk:cleanup', () => {
+        positions.clear()
+      })
+      sdk.hooks.hook('sdk:router:backward:end', (_, from) => {
+        positions.delete(recordKeyGenerator(from))
+      })
+
       setSDK(sdk)
       setupRouterScroller(sdk.router, options)
     },
