@@ -1,4 +1,4 @@
-import type { Fn, NoopFn } from '@rhao/types-base'
+import type { Fn } from '@rhao/types-base'
 import type { ComputedRef } from 'vue'
 import { computed, nextTick } from 'vue'
 import { useToggle } from '@vueuse/core'
@@ -24,10 +24,6 @@ export interface AnimationOptions {
 
 export interface Animation extends AppSDKPluginObject {
   /**
-   * 动画启用状态
-   */
-  enabled: ComputedRef<boolean>
-  /**
    * 动画名称
    */
   name: ComputedRef<string | undefined>
@@ -36,19 +32,28 @@ export interface Animation extends AppSDKPluginObject {
    */
   allowRevert: Fn<[state: boolean]>
   /**
+   * 动画启用状态
+   * @deprecated 该属性将在下个大版本删除，请使用 `isEnabled` 替代！
+   */
+  enabled: ComputedRef<boolean>
+  /**
+   * 动画启用状态
+   */
+  isEnabled: ComputedRef<boolean>
+  /**
    * 切换动画启用状态，默认单次切换，在切换路由后还原启用状态
    */
-  toggle: Fn<[state?: boolean, once?: boolean]>
+  toggle: Fn<[value?: boolean], boolean>
   /**
    * 启用动画，默认单次启用，在切换路由后还原启用状态
    */
-  enable: Fn<[once?: boolean]>
+  enable: Fn<[], boolean>
   /**
    * 禁用动画，默认单次禁用，在切换路由后还原启用状态
    *
    * ***注意：禁用时需要设置 Transition.css 为 false，否则会影响切换效果***
    */
-  disable: NoopFn
+  disable: Fn<[], boolean>
 }
 
 /**
@@ -84,11 +89,12 @@ export function createAnimation(options: AnimationOptions = {}) {
   let isAllowRevert = true
 
   const animation: Animation = {
-    enabled: computed(() => enabled.value),
     name: animationName,
     allowRevert: (value: boolean) => {
       isAllowRevert = !!value
     },
+    enabled: computed(() => enabled.value),
+    isEnabled: computed(() => enabled.value),
     toggle: toggleEnabled,
     enable: () => toggleEnabled(true),
     disable: () => toggleEnabled(false),
