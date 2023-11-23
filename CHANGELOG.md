@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.4.0](https://github.com/l246804/vue-app-sdk/compare/v2.3.2...v2.4.0) (2023-11-23)
+
+
+### Features
+
+* 🎸 BetterScroller 支持切换自动记录和还原功能 ([be1f3e4](https://github.com/l246804/vue-app-sdk/commit/be1f3e4e277db395580bf97e6796ca97e2881468))
+
+
+### Bug Fixes
+
+* 🐛 修复 Animation 类型定义 ([ec16ba7](https://github.com/l246804/vue-app-sdk/commit/ec16ba7795a73e1405d15e3f11595595ef09f208))
+
 ## [2.3.2](https://github.com/l246804/vue-app-sdk/compare/v2.3.1...v2.3.2) (2023-11-23)
 
 
