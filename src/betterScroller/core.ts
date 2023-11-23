@@ -1,7 +1,8 @@
-import { nextTick } from 'vue'
+import { computed, nextTick } from 'vue'
 import { isNavigationFailure } from 'vue-router'
 import type { RouteLocationNormalized, RouteLocationNormalizedLoaded, Router } from 'vue-router'
 import type { NotNullish } from '@rhao/types-base'
+import { useToggle } from '@vueuse/core'
 import { createSDKRef } from '../utils'
 import type {
   RouterScrollBehaviorOptions,
@@ -39,6 +40,7 @@ export function createRouterScroller(options: RouterScrollBehaviorOptions) {
   const { recordKeyGenerator = defaultRecordKeyGenerator } = options
   const { setSDK, resolveSDK } = createSDKRef('BetterScroller')
   const positions = new Map<string, ScrollPositionCoordinatesGroup>()
+  const [auto, toggleAuto] = useToggle(true)
 
   /**
    * Setup router scroll behavior directly with a router instance.
@@ -61,13 +63,15 @@ export function createRouterScroller(options: RouterScrollBehaviorOptions) {
       // `beforeResolve` is also called when going back in history, we ignores it
       if (history.state?.current === to.fullPath) return
 
+      if (!auto.value) return
+
       const pos = capturePositions(options)
       const key = recordKeyGenerator(from)
       positions.set(key, pos)
     })
 
     router.afterEach((to, from, failure) => {
-      if (isNavigationFailure(failure)) return
+      if (isNavigationFailure(failure) || !auto.value) return
 
       const key = recordKeyGenerator(to)
       const pos = positions.get(key)
@@ -87,6 +91,10 @@ export function createRouterScroller(options: RouterScrollBehaviorOptions) {
   const routerScroller: RouterScroller = {
     options,
     positions,
+    isAuto: computed(() => auto.value),
+    toggleAuto,
+    enableAuto: () => toggleAuto(true),
+    disableAuto: () => toggleAuto(false),
     trigger,
     install(sdk) {
       sdk.routerScroller = routerScroller
