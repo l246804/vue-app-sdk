@@ -5,10 +5,24 @@ import { createHooks } from './hooks'
 import type { AppSDK, AppSDKOptions, AppSDKPluginFunction, AppSDKPluginObject } from './types'
 import { enhanceRouter } from './enhanceRouter'
 
+/**
+ * AppSDK InjectionKey
+ */
 export const APP_SDK_KEY: InjectionKey<AppSDK> = Symbol('App SDK')
 
 /**
  * 获取 AppSDK 实例
+ * @returns AppSDK 实例
+ *
+ * @example
+ * ```ts
+ * // xxx.vue
+ * defineComponent({
+ *   setup() {
+ *     const sdk = useAppSDK()
+ *   }
+ * })
+ * ```
  */
 export function useAppSDK() {
   return inject(APP_SDK_KEY)!
@@ -16,6 +30,7 @@ export function useAppSDK() {
 
 /**
  * 创建 VueAppSDK
+ * @param options 配置项
  *
  * @example
  * ```ts

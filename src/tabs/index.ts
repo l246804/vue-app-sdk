@@ -11,7 +11,7 @@ import type {
   Recordable,
 } from '@rhao/types-base'
 import { type RouteLocationNormalized, isNavigationFailure } from 'vue-router'
-import { createSwitch } from '@rhao/lodash-x'
+import { createSwitch } from 'nice-fns'
 import { useToggle } from '@vueuse/core'
 import type { Metadata } from '../page/types'
 import type { AppSDKPluginObject } from '../sdk'

@@ -1,13 +1,13 @@
 import type { Fn, Recordable } from '@rhao/types-base'
 import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
 import {
-  bigCamelCase,
+  eachTree,
   findTree,
-  forEachTree,
   mapTree,
+  pascalCase,
   toArrayTree,
   toTreeArray,
-} from '@rhao/lodash-x'
+} from 'nice-fns'
 import { cloneDeep, isFunction, isObject, isObjectLike, isString } from 'lodash-unified'
 import type { MaybeRefOrGetter } from 'vue'
 import { computed, toValue } from 'vue'
@@ -76,7 +76,7 @@ const defaultTreeOptions = {
   key: 'id',
   parentKey: 'parentId',
   childrenKey: 'children',
-}
+} as const
 
 /**
  * 创建页面管理器，部分功能注册到 AppSDK 才能正常工作
@@ -155,7 +155,7 @@ export function createPage<O extends PageOptions, M extends AppMode = O['mode']>
     if (clone) pages = cloneDeep(pages)
 
     if (convertPathToAbsolute) {
-      forEachTree(
+      eachTree(
         pages,
         (page, _, __, ___, links) => {
           if (page.children?.length) return
@@ -217,7 +217,7 @@ export function createPage<O extends PageOptions, M extends AppMode = O['mode']>
     }) as InternalMetadataWithChildren[]
 
     if (convertPathToAbsolute) {
-      forEachTree(
+      eachTree(
         tree,
         (page, _, __, ___, links) => {
           if (page.children?.length) return
@@ -314,7 +314,7 @@ export function createPage<O extends PageOptions, M extends AppMode = O['mode']>
       }
       else if (isObjectLike(data)) {
         const def: any = 'default' in data ? data.default : data
-        def.name = bigCamelCase(page.name)
+        def.name = pascalCase(page.name)
         return data
       }
       return data
@@ -429,7 +429,7 @@ export function createPage<O extends PageOptions, M extends AppMode = O['mode']>
       const _hasAuth = (page: InternalMetadata) => hasAuth(page, toValue(roleList))
 
       // 遍历树置空无权限数据
-      forEachTree(tree, (page, index, parent) => {
+      eachTree(tree, (page, index, parent) => {
         const setNull = () => {
           const list = parent?.children || tree
           list[index] = null as any
@@ -482,7 +482,7 @@ export function createPage<O extends PageOptions, M extends AppMode = O['mode']>
      */
     const authTreeLinkMap = computed(() => {
       const map: Recordable<InternalMetadataWithChildren[]> = {}
-      forEachTree(
+      eachTree(
         authTreePages.value,
         (page, _, __, ___, links) => {
           map[page.id] = links

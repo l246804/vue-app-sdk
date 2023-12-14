@@ -1,5 +1,5 @@
 /* eslint-disable no-new-func */
-import { forEachTree } from '@rhao/lodash-x'
+import { eachTree } from 'nice-fns'
 import type { PartialWith } from '@rhao/types-base'
 import type { AppMode, Metadata, MetadataWithChildren } from './types'
 
@@ -80,7 +80,7 @@ export function defineStaticPages<M extends AppMode>(
     = typeof codeOrPages === 'string' ? new Function(`return ${codeOrPages}`)() : codeOrPages
   let id = 1
 
-  forEachTree(pages, (page, _, __, ___, links) => {
+  eachTree(pages, (page, _, __, ___, links) => {
     // 没有子级时认为是末梢节点，遍历父级链路添加 id
     if (!page.children?.length) {
       links.forEach((item, index) => {

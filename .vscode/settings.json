@@ -14,7 +14,7 @@
   "editor.wordWrapColumn": 100,
   "editor.stickyTabStops": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll": true
+    "source.fixAll": "explicit"
   },
   "git.suggestSmartCommit": false,
   "emmet.includeLanguages": {
@@ -146,6 +146,7 @@
     "mkdist",
     "plopfile",
     "unplugin",
+    "vitepress",
     "vueuse"
   ]
 }
