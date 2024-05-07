@@ -65,7 +65,7 @@ export function createFeatureAuth(options: FeatureAuthOptions) {
       if (features.length === 0) return false
 
       const authSet = new Set(_authList)
-      return features[op === 'and' ? 'every' : 'some'](authSet.has)
+      return features[op === 'and' ? 'every' : 'some'](authSet.has.bind(authSet))
     },
     directive: {
       mounted(el, binding) {
