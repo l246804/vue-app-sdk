@@ -1,7 +1,7 @@
 {
   "name": "vue-app-sdk",
   "type": "module",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "Vue App SDK.",
   "author": "RayHao <https://github.com/l246804>",
   "license": "MIT",

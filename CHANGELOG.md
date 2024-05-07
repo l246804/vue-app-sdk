@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.4.1](https://github.com/l246804/vue-app-sdk/compare/v2.4.0...v2.4.1) (2024-05-07)
+
+
+### Bug Fixes
+
+* 🐛 修复 FeatureAuth.hasAuth 错误 ([0279528](https://github.com/l246804/vue-app-sdk/commit/02795285f15cd1a31f3ab9c0c4c86e1e1a0d136f))
+
+
+### Chores
+
+* 🤖 更新依赖并添加 vitepress 文档 ([5916d22](https://github.com/l246804/vue-app-sdk/commit/5916d22057969c38ce61847180afb56b0c4bb4ed))
+
 ## [2.4.0](https://github.com/l246804/vue-app-sdk/compare/v2.3.2...v2.4.0) (2023-11-23)
 
 

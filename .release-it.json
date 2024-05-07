@@ -12,7 +12,6 @@
   },
   "hooks": {
     "before:init": ["npm run build"],
-    "before:git:release": ["npm run docs:build", "git add website"],
     "after:release": ["echo Successfully released ${name} v${version} to ${repo.repository}."]
   },
   "plugins": {
