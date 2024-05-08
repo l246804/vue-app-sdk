@@ -134,3 +134,8 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+src/index.ts
+src/plugins/index.ts
+
+**/.vitepress/cache
