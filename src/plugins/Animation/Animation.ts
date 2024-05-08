@@ -68,13 +68,13 @@ export class Animation implements Plugin {
    * 路由导航时的动画名称，禁用动画时将返回 `undefined`
    */
   get name() {
-    return this.isEnabled ? this._animationName : undefined
+    return this.isEnabled ? this._animationName.value : undefined
   }
 
   /**
    * 当前使用的动画名称
    */
-  private _animationName = this.forwardName
+  private _animationName = ref(this.forwardName)
 
   /**
    * 前进动画名称
@@ -125,7 +125,7 @@ export class Animation implements Plugin {
   install = (sdk: AppSDKInternalInstance) => {
     sdk.hook('sdk:router:navigate', (direction) => {
       // 更改当前使用的动画名称
-      this._animationName
+      this._animationName.value
         = direction === NavigationDirection.backward ? this.backwardName : this.forwardName
 
       // 延迟启用动画
@@ -136,7 +136,7 @@ export class Animation implements Plugin {
     return () => {
       this._isAutoEnabled = true
       this._isEnabled.value = true
-      this._animationName = this.forwardName
+      this._animationName.value = this.forwardName
     }
   }
 }

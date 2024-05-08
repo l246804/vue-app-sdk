@@ -30,15 +30,15 @@ app.mount('#app')
 // ...
 import { createAnimation } from 'vue-app-sdk'
 
-const sdk = createAppSDK({
-  plugins: [
-    // 注册转场动画插件
-    createAnimation({
-      valueForward: 'forward',
-      valueBackward: 'backward',
-    }),
-  ]
-})
+export const sdk = createAppSDK()
+
+sdk.use(
+  // 注册转场动画插件
+  createAnimation({
+    forwardName: 'forward',
+    backwardName: 'backward',
+  })
+)
 ```
 
 ## 功能详情
@@ -55,18 +55,6 @@ const sdk = createAppSDK({
 - [SSO - 单点登录管理](https://github.com/l246804/vue-app-sdk/wiki/SSO)
 - [Tabs - 标签页列表管理](https://github.com/l246804/vue-app-sdk/wiki/Tabs)
 - [Token - 应用令牌信息管理](https://github.com/l246804/vue-app-sdk/wiki/Token)
-
-## ~~热更新时内存引用失效~~
-
-引入下面的函数用于修复 `vite` 开发时部分文件热更新可能导致内存引用丢失问题。
-
-```ts
-// sdk.ts
-import { fixHotUpdateVite } from 'vue-app-sdk'
-
-if (import.meta.env.DEV)
-  fixHotUpdateVite()
-```
 
 ## 迁移至 v1.x
 
