@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.0.1](https://github.com/l246804/vue-app-sdk/compare/v3.0.0...v3.0.1) (2024-05-08)
+
+
+### Bug Fixes
+
+* 🐛 修复 Animation 动画名称无法响应式切换 ([98613dd](https://github.com/l246804/vue-app-sdk/commit/98613dddf69cb1af2519affbfe039f3166838a11))
+
+
+### Chores
+
+* 🤖 update deps ([3736739](https://github.com/l246804/vue-app-sdk/commit/37367394cf460c80afdd14d28cef8f79ec731ebc))
+
 ## [3.0.0](https://github.com/l246804/vue-app-sdk/compare/v2.4.0...v3.0.0) (2024-05-08)
 
 
