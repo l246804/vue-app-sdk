@@ -23,7 +23,8 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "paths": {
-      "vue-app-sdk": ["./src/index.ts"]
+      "vue-app-sdk": ["./src/index.ts"],
+      "@/*": ["./src/*"]
     }
   },
   "include": ["src/**/*.ts"]

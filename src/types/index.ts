@@ -1,18 +1,21 @@
 import type { ConfigurableWindow, StorageLike, StorageLikeAsync } from '@vueuse/core'
 
-export interface StorageOptions<A extends boolean = false> extends ConfigurableWindow {
+/**
+ * 支持持久化的通用配置项
+ */
+export interface StorageOptions<Async extends boolean = false> extends ConfigurableWindow {
   /**
    * 是否持久化数据到 `storage` 中
    * @default true
    */
-  persisted?: boolean
+  persistent?: boolean
   /**
-   * Window's Storage
+   * 存储中心，支持实现 `Storage` 接口的对象
    * @default window.localStorage
    */
-  storage?: [A] extends [true] ? StorageLikeAsync : StorageLike
+  storage?: [Async] extends [true] ? StorageLikeAsync : StorageLike
   /**
-   * key of `storage`
+   * 持久化到存储中心的键
    */
   storageKey?: string
 }

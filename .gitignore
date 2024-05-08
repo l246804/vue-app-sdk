@@ -72,12 +72,8 @@ web_modules/
 # Yarn Integrity file
 .yarn-integrity
 
-# dotenv environment variable files
-.env
-.env.development.local
-.env.test.local
-.env.production.local
-.env.local
+# local files
+.*.local
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache
@@ -87,9 +83,10 @@ web_modules/
 .next
 out
 
-# Nuxt.js build / generate output
+# build / generate output
 .nuxt
 dist
+dist-ssr
 
 # Gatsby files
 .cache/
@@ -129,6 +126,11 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
-src/index.ts
-docs/api
-**/.vitepress/cache
+# Editor directories and files
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?

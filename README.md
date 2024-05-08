@@ -56,7 +56,7 @@ const sdk = createAppSDK({
 - [Tabs - 标签页列表管理](https://github.com/l246804/vue-app-sdk/wiki/Tabs)
 - [Token - 应用令牌信息管理](https://github.com/l246804/vue-app-sdk/wiki/Token)
 
-## 热更新时内存引用失效
+## ~~热更新时内存引用失效~~
 
 引入下面的函数用于修复 `vite` 开发时部分文件热更新可能导致内存引用丢失问题。
 
@@ -64,7 +64,8 @@ const sdk = createAppSDK({
 // sdk.ts
 import { fixHotUpdateVite } from 'vue-app-sdk'
 
-if (import.meta.env.DEV) fixHotUpdateVite()
+if (import.meta.env.DEV)
+  fixHotUpdateVite()
 ```
 
 ## 迁移至 v1.x
@@ -76,3 +77,8 @@ if (import.meta.env.DEV) fixHotUpdateVite()
 - 更改配置项传入方式 `app.use(sdk, {})` 为 `createAppSDK({})`
 - 更改插件注册方式 `sdk.use(plugin)` 为 `createAppSDK({ plugins: [plugin] })`
 - 移除 `sdk:mount`、`sdk:unmount` 事件
+
+## 迁移至 v3.x
+
+- 优化插件体系，变更插件使用方式
+- 优化插件功能，变更插件执行方式

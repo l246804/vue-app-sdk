@@ -1,28 +1,51 @@
 {
   /* ========================== Editor ========================== */
-  "emmet.triggerExpansionOnTab": true,
-  "files.autoSave": "onWindowChange",
-  "explorer.compactFolders": false,
-  // 保存时只通过 eslint 修复代码
-  // 折行行为可通过手动触发快捷键让 prettier 处理
   "editor.formatOnSave": false,
   "editor.minimap.renderCharacters": false,
   "editor.tabSize": 2,
   "editor.fontLigatures": true,
-  "editor.renderLineHighlight": "all",
-  "editor.renderWhitespace": "none",
-  "editor.wordWrapColumn": 100,
   "editor.stickyTabStops": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
   "editor.codeActionsOnSave": {
-    "source.fixAll": "explicit"
+    "source.fixAll": "never",
+    "source.fixAll.eslint": "explicit",
+    "source.organizeImports": "never"
   },
+  "files.autoSave": "onWindowChange",
+  "files.trimTrailingWhitespace": true,
+  "files.eol": "\n",
+  "files.insertFinalNewline": true,
   "git.suggestSmartCommit": false,
+  "emmet.triggerExpansionOnTab": false,
+  "emmet.showSuggestionsAsSnippets": true,
   "emmet.includeLanguages": {
     "vue-html": "html",
     "postcss": "css"
   },
-  /* ========================== Editor ========================== */
-
+  "search.exclude": {
+    "**/*.snap": true,
+    "**/*.svg": true,
+    "**/.git": true,
+    "**/.github": false,
+    "**/.nuxt": true,
+    "**/.output": true,
+    "**/.pnpm": true,
+    "**/.vscode": true,
+    "**/.yarn": true,
+    "**/assets": true,
+    "**/bower_components": true,
+    "**/dist/**": true,
+    "**/logs": true,
+    "**/node_modules": true,
+    "**/out/**": true,
+    "**/package-lock.json": true,
+    "**/pnpm-lock.yaml": true,
+    "**/public": true,
+    "**/temp": true,
+    "**/yarn.lock": true,
+    "**/CHANGELOG*": true,
+    "**/LICENSE*": true
+  },
   /* ========================== Prettier ========================== */
   "prettier.enable": true,
   "prettier.htmlWhitespaceSensitivity": "css",
@@ -40,35 +63,66 @@
   "prettier.singleQuote": true,
   "prettier.trailingComma": "none",
   "prettier.singleAttributePerLine": true,
-  /* ========================== Prettier ========================== */
-
   /* ========================== ESLint ========================== */
   "eslint.enable": true,
   "eslint.format.enable": true,
-  "eslint.probe": [
-    "javascript",
-    "javascriptreact",
-    "typescript",
-    "typescriptreact",
-    "html",
-    "vue",
-    "markdown",
-    "json",
-    "jsonc"
+  "eslint.experimental.useFlatConfig": true,
+  // Silent the stylistic rules in you IDE, but still auto fix them
+  "eslint.rules.customizations": [
+    {
+      "rule": "style/*",
+      "severity": "off"
+    },
+    {
+      "rule": "format/*",
+      "severity": "off"
+    },
+    {
+      "rule": "*-indent",
+      "severity": "off"
+    },
+    {
+      "rule": "*-spacing",
+      "severity": "off"
+    },
+    {
+      "rule": "*-spaces",
+      "severity": "off"
+    },
+    {
+      "rule": "*-order",
+      "severity": "off"
+    },
+    {
+      "rule": "*-dangle",
+      "severity": "off"
+    },
+    {
+      "rule": "*-newline",
+      "severity": "off"
+    },
+    {
+      "rule": "*quotes",
+      "severity": "off"
+    },
+    {
+      "rule": "*semi",
+      "severity": "off"
+    }
   ],
   "eslint.validate": [
     "javascript",
     "javascriptreact",
     "typescript",
     "typescriptreact",
-    "html",
     "vue",
+    "html",
     "markdown",
     "json",
-    "jsonc"
+    "jsonc",
+    "yaml",
+    "toml"
   ],
-  /* ========================== ESLint ========================== */
-
   /* ========================== Todo Tree ========================== */
   "todo-tree.filtering.useBuiltInExcludes": "file and search excludes",
   "todo-tree.highlights.defaultHighlight": {
@@ -76,7 +130,12 @@
     "background": "#00000000",
     "type": "line"
   },
-  "todo-tree.general.tags": ["BUG", "HACK", "FIXME", "TODO"],
+  "todo-tree.general.tags": [
+    "BUG",
+    "HACK",
+    "FIXME",
+    "TODO"
+  ],
   "todo-tree.highlights.customHighlight": {
     "TODO": {
       "icon": "check-circle",
@@ -95,58 +154,50 @@
       "foreground": "#ff9900"
     }
   },
-  /* ========================== Todo Tree ========================== */
+  /* ========================== I18n ========================== */
+  "i18n-ally.keystyle": "nested",
+  "i18n-ally.sortKeys": true,
+  "i18n-ally.enabledFrameworks": [
+    "vue-sfc",
+    "vue"
+  ],
 
-  /* ========================== Formatter ========================== */
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[vue]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[javascriptreact]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[html]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[css]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[less]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[sass]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[scss]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[jsonc]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  /* ========================== Formatter ========================== */
-
-  /* ========================== 常更改的配置项 ========================== */
+  /* ========================== Often change ========================== */
   "cSpell.words": [
     "antfu",
     "commitlint",
     "conventionalcommits",
-    "hookable",
     "infile",
     "mkdist",
     "plopfile",
-    "unplugin",
-    "vitepress",
-    "vueuse"
+    "consola",
+    "alipay",
+    "execa",
+    "Cascader",
+    "composables",
+    "demi",
+    "endregion",
+    "Falsey",
+    "Fira",
+    "fullscreen",
+    "keycodes",
+    "kolorist",
+    "latlng",
+    "linebreak",
+    "nocheck",
+    "nuxt",
+    "Parens",
+    "pinia",
+    "quickapp",
+    "runtimes",
+    "singleline",
+    "styl",
+    "stylelint",
+    "swipeable",
+    "tarojs",
+    "taze",
+    "tinycolor",
+    "weapp",
+    "treeshake"
   ]
 }
