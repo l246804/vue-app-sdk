@@ -90,7 +90,7 @@ export interface TabsOptions extends StorageOptions {
 
 export type RouteForGenerableID = Pick<RouteLocationNormalized, 'fullPath' | 'meta'>
 
-export type TabPageForGenerableID = Pick<TabPage, 'pageId' | 'fullPath' | 'isUniqInTabs'>
+export type TabPageForGenerableID = Pick<TabPage, 'pageId' | 'fullPath' | 'isUniq'>
 
 export type ResolvableIdType = MaybeNullish<string | number | TabPage | RouteForGenerableID>
 
@@ -121,8 +121,8 @@ function rawPageToRoute(data: PageMetadata): RouteForGenerableID {
 
 const updatableTabPageProps = [
   'isAffix',
+  'isUniq',
   'isKeepAlive',
-  'isUniqInTabs',
   'title',
   'icon',
   'fullPath',
@@ -273,20 +273,20 @@ export class Tabs implements Plugin {
    * 生成标签页 ID
    */
   generateID(data: RouteForGenerableID | TabPageForGenerableID) {
-    let pageId, fullPath, isUniqInTabs
+    let pageId, fullPath, isUniq
     if ('meta' in data) {
       const metadata = getMetadata(data)
       pageId = metadata.id
-      isUniqInTabs = metadata.isUniqInTabs
+      isUniq = metadata.isUniq
       fullPath = data.fullPath
     }
     else {
       pageId = data.pageId
-      isUniqInTabs = data.isUniqInTabs
+      isUniq = data.isUniq
       fullPath = data.fullPath
     }
     let id = `${pageId}`
-    if (!isUniqInTabs)
+    if (!isUniq)
       id += `__${fullPath}`
     return id
   }
@@ -380,19 +380,20 @@ export class Tabs implements Plugin {
     const id = this.resolveId(target)
     const tabPage = this.pages.find((p) => p.id === id)
     if (tabPage) {
-      const needUpdateId
-        = data.fullPath && tabPage.fullPath !== data.fullPath && !tabPage.isUniqInTabs
-      const needResetActive = needUpdateId && id === this.active
+      const needUpdateId = data.fullPath && tabPage.fullPath !== data.fullPath && !tabPage.isUniq
 
       assign(tabPage, pick(data, unsafeUpdatableTabPageProps))
 
-      if (needResetActive) {
+      if (needUpdateId) {
         assign(tabPage, { id: this.generateID(tabPage) })
-        this._setActive(tabPage.id)
 
         // 移除组件缓存
         if (this._keepAlive && tabPage.componentName)
           this._keepAlive.remove(tabPage.componentName)
+
+        // 更新当前激活 ID
+        if (id === this.active)
+          this._setActive(tabPage.id)
       }
     }
   }
@@ -723,7 +724,7 @@ export class Tabs implements Plugin {
 
     const tabPage = this.createTabPage(route)
     const { fuzzy, exact } = this.matchSameTabPage(tabPage)
-    const isExist = tabPage.isUniqInTabs ? fuzzy.length > 0 : !!exact
+    const isExist = tabPage.isUniq ? fuzzy.length > 0 : !!exact
 
     // 不存在相同标签页时添加
     if (!isExist) {

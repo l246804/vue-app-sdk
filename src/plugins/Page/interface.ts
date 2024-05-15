@@ -101,7 +101,7 @@ export interface PageMetadata {
   /**
    * PC - 在标签栏中保持唯一标签
    */
-  isUniqInTabs?: boolean
+  isUniq?: boolean
   /**
    * PC - 是否支持缓存，切换页面时将保留页面数据
    */

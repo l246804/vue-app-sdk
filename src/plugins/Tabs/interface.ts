@@ -3,7 +3,7 @@ import type { PageMetadata } from 'vue-app-sdk'
 export interface TabPage
   extends Pick<
     PageMetadata,
-    'path' | 'name' | 'title' | 'icon' | 'isKeepAlive' | 'isAffix' | 'isUniqInTabs'
+    'path' | 'name' | 'title' | 'icon' | 'isKeepAlive' | 'isAffix' | 'isUniq'
   > {
   /**
    * 标签页 ID
