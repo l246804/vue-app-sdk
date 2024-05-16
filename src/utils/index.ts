@@ -79,7 +79,10 @@ export async function loadRouteRecord(route: RouteRecordNormalized) {
   return route
 }
 
-export type LoadableRoute = RouteLocationNormalized | RouteRecordNormalized
+export type LoadableRoute =
+  | RouteLocationNormalized
+  | RouteRecordNormalized
+  | RouteLocationNormalizedLoaded
 
 /**
  * 路由是否未加载
