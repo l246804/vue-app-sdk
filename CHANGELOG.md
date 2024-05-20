@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.0.4](https://github.com/l246804/vue-app-sdk/compare/v3.0.3...v3.0.4) (2024-05-20)
+
+
+### Chores
+
+* 🤖 优化 handleMenuClick 代码 ([73b4391](https://github.com/l246804/vue-app-sdk/commit/73b439117ed98945140365d65457792d16588209))
+
 ## [3.0.3](https://github.com/l246804/vue-app-sdk/compare/v3.0.2...v3.0.3) (2024-05-16)
 
 
