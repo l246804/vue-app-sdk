@@ -20,7 +20,7 @@ import {
 import type { ToTreeArrayOptions } from 'nice-fns'
 import { type MaybeRefOrGetter, computed, isRef, shallowRef, toValue, watch } from 'vue'
 import type { PageMetadata, PageMetadataWithChildren, RoleList } from './interface'
-import { assign, logger, syncComponentName } from '@/utils'
+import { assign, syncComponentName } from '@/utils'
 
 export interface PageOptions {
   /**
@@ -708,11 +708,7 @@ export class Page implements Plugin {
       if (singleWindow && this.openedWindow && !this.openedWindow.closed)
         this.openedWindow.location.replace(url)
       else this.openedWindow = win!.open(url, '_blank')
-
-      return
     }
-
-    logger.warn('参数 "menu" 缺少必填字段！', menu)
   }
 
   install(sdk: AppSDKInternalInstance) {
