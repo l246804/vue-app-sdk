@@ -33,6 +33,11 @@ export interface PageOptions {
    */
   linkSingleWindow?: boolean
   /**
+   * 调用 `handleMenuClick` 时是否允许跳转外链，返回假值时走正常页面跳转
+   * @default (menu) => menu.link
+   */
+  allowLink?: (menu: PageMetadata) => boolean
+  /**
    * 根据 `page.file` 获取真实组件
    * @example
    * ```ts
@@ -69,6 +74,8 @@ export const PAGE_ID: PluginID<Page> = Symbol('page')
 const RESET_FLAG = Symbol('reset flag')
 
 const defaultCalibrateMetadata = (data: any) => data as PageMetadata
+
+const defaultAllowLink = (menu: PageMetadata) => !!menu.link
 
 const defaultTreeOptions = {
   key: 'id',
@@ -110,6 +117,14 @@ export class Page implements Plugin {
    */
   get calibrateMetadata() {
     return this.options.calibrateMetadata || defaultCalibrateMetadata
+  }
+
+  /**
+   * 是否允许跳转外链
+   * @readonly
+   */
+  get allowLink() {
+    return this.options.allowLink || defaultAllowLink
   }
 
   /**
@@ -683,6 +698,20 @@ export class Page implements Plugin {
 
     const to = { name: menu.name, query, params }
 
+    // 处理外链
+    if (this.allowLink(menu)) {
+      const hasOpened = this.openedWindow && !this.openedWindow.closed
+      const win = singleWindow && hasOpened ? this.openedWindow : window
+      const url = this.resolveLink(menu)
+
+      // singleWindow = true 时复用已打开的窗口
+      if (singleWindow && this.openedWindow && !this.openedWindow.closed)
+        this.openedWindow.location.replace(url)
+      else this.openedWindow = win!.open(url, '_blank')
+
+      return
+    }
+
     // 处理重定向和组件
     if (menu.file || menu.redirect) {
       // 移动端禁用导航动画并使用 `router.replace` 替换
@@ -695,19 +724,6 @@ export class Page implements Plugin {
       else {
         router.push(to)
       }
-      return
-    }
-
-    // 处理外链
-    if (menu.link) {
-      const hasOpened = this.openedWindow && !this.openedWindow.closed
-      const win = singleWindow && hasOpened ? this.openedWindow : window
-      const url = this.resolveLink(menu)
-
-      // singleWindow = true 时复用已打开的窗口
-      if (singleWindow && this.openedWindow && !this.openedWindow.closed)
-        this.openedWindow.location.replace(url)
-      else this.openedWindow = win!.open(url, '_blank')
     }
   }
 
