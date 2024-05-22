@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/l246804/vue-app-sdk/compare/v3.0.4...v3.1.0) (2024-05-22)
+
+
+### Features
+
+* 🎸 Page 支持外链跳转拦截 ([30d9750](https://github.com/l246804/vue-app-sdk/commit/30d9750314f5779f42c6d14400a05987576e3a6b))
+
 ## [3.0.4](https://github.com/l246804/vue-app-sdk/compare/v3.0.3...v3.0.4) (2024-05-20)
 
 
