@@ -2,7 +2,7 @@ import { resolve } from 'node:path'
 import type { UserConfig } from 'vite'
 import { defineConfig } from 'vite'
 import Dts from 'vite-plugin-dts'
-import type { ExternalOption, OutputOptions } from 'rollup'
+import type { OutputOptions } from 'rollup'
 import pkg from './package.json'
 
 // 输出格式后缀
@@ -19,15 +19,14 @@ const outDir = resolve(__dirname, 'dist')
 
 // 入口目录
 const entryDir = resolve(__dirname, 'src')
-const entryFile = 'src/index'
 
 // 生成外部依赖配置
 function genExternals() {
   const { peerDependencies = {}, dependencies = {} } = pkg as any
   return [
     /^node(:.+)?$/,
-    ...new Set([...Object.keys(peerDependencies), ...Object.keys(dependencies)]),
-  ].map((p) => p instanceof RegExp ? p : new RegExp(`^${p}$|^${p}/.+`)) as ExternalOption
+    ...new Set([...Object.keys(peerDependencies), ...Object.keys(dependencies), pkg.name]),
+  ].map((p) => (p instanceof RegExp ? p : new RegExp(`^${p}$|^${p}/.+`))) as RegExp[]
 }
 
 // 生成模块输出配置
@@ -56,7 +55,7 @@ export default defineConfig(() => {
       minify,
       sourcemap: true,
       lib: {
-        entry: entryFile,
+        entry: 'src/index',
       },
       rollupOptions: {
         treeshake,
@@ -70,8 +69,6 @@ export default defineConfig(() => {
         '@': entryDir,
       },
     },
-    plugins: [
-      Dts({ include: [entryDir] }),
-    ],
+    plugins: [Dts({ include: [entryDir] })],
   } as UserConfig
 })

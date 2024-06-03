@@ -1,4 +1,4 @@
-import type { PageMetadata } from 'vue-app-sdk'
+import type { PageMetadata } from '../Page'
 
 export interface TabPage
   extends Pick<
