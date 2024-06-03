@@ -126,7 +126,9 @@ export class AppSDK extends AppSDKHookable<AppSDKHooks> {
    * @param ids 插件 ID 列表
    */
   getPlugins = <IDs extends Plugin['id'][] = Plugin['id'][]>(...ids: IDs) => {
-    return ids.map((id) => this.getPlugin(id)) as { [K in keyof IDs]: InferPlugin<IDs[K]> }
+    return ids.map((id) => this.getPlugin(id)) as {
+      [K in keyof IDs]: InferPlugin<IDs[K]> | undefined
+    }
   }
 
   /**
