@@ -1,9 +1,4 @@
-import type {
-  AppSDKInternalInstance,
-  Plugin,
-  PluginID,
-  StorageOptions,
-} from 'vue-app-sdk'
+import type { AppSDKInternalInstance, Plugin, PluginID, StorageOptions } from 'vue-app-sdk'
 import type { MaybeRefOrGetter, Ref } from 'vue'
 import { toValue } from 'vue'
 import { isString } from 'nice-fns'
@@ -53,15 +48,15 @@ export interface TokenProfile {
 
 export interface TokenOptions extends TokenProfile, StorageOptions {}
 
-export interface TokenState {
+export interface TokenState<Multiple extends boolean = true> {
   /**
    * 访问令牌
    */
-  accessToken: Record<TokenKey, string>
+  accessToken: [Multiple] extends [true] ? Partial<Record<TokenKey, string>> : string
   /**
    * 刷新令牌
    */
-  refreshToken: Record<TokenKey, string>
+  refreshToken: [Multiple] extends [true] ? Partial<Record<TokenKey, string>> : string
 }
 
 export type TokenType = keyof TokenState
@@ -71,12 +66,7 @@ export type TokenType = keyof TokenState
  */
 export const TOKEN_ID: PluginID<Token> = Symbol('token')
 
-/**
- * 默认令牌键
- */
-export const NORMAL_TOKEN = '__normal__'
-
-function defaultState(): TokenState {
+function defaultState(): TokenState<true> {
   return {
     accessToken: {},
     refreshToken: {},
@@ -106,12 +96,19 @@ export class Token implements Plugin {
     this.set = this.set.bind(this)
   }
 
+  /**
+   * 默认令牌键
+   */
+  static get defaultKey() {
+    return '__normal__'
+  }
+
   id = TOKEN_ID
 
   /**
    * 令牌状态
    */
-  private _state: Ref<TokenState>
+  private _state: Ref<TokenState<true>>
 
   /**
    * 令牌配置
@@ -125,14 +122,14 @@ export class Token implements Plugin {
    * @example
    * ```ts
    * // 应用仅存在单令牌
-   * Token.has('accessToken')
+   * token.has('accessToken')
    *
    * // 应用存在多令牌
-   * Token.has('accessToken', 'second')
+   * token.has('accessToken', 'second')
    * ```
    */
-  has = (type: TokenType, key: TokenKey = NORMAL_TOKEN) => {
-    return !!this._state.value[type][key]
+  has = (type: TokenType, key: TokenKey = Token.defaultKey) => {
+    return !!this.get(type, key)
   }
 
   /**
@@ -142,13 +139,13 @@ export class Token implements Plugin {
    * @example
    * ```ts
    * // 应用仅存在单令牌
-   * Token.get('accessToken')
+   * token.get('accessToken')
    *
    * // 应用存在多令牌
-   * Token.get('accessToken', 'second')
+   * token.get('accessToken', 'second')
    * ```
    */
-  get = (type: TokenType, key: TokenKey = NORMAL_TOKEN) => {
+  get = (type: TokenType, key: TokenKey = Token.defaultKey) => {
     return this._state.value[type][key]
   }
 
@@ -157,43 +154,79 @@ export class Token implements Plugin {
    * @param type 令牌类型
    * @param value 令牌
    * @param key 令牌键
+   * @param profile 令牌配置
+   *
    * @example
    * ```ts
    * // 应用仅存在单令牌
-   * Token.set('accessToken', 'token value')
+   * token.set('accessToken', 'token value', { format: 'jwt' })
    *
    * // 应用存在多令牌
-   * Token.set('accessToken', 'token value', 'second')
+   * token.set('accessToken', 'token value', 'second', { format: 'jwt', jwtPrefix: 'Token' })
    * ```
    */
   set(type: TokenType, value?: string, key?: TokenKey, profile?: TokenProfile): void
   /**
    * 设置令牌状态
    * @param type 令牌类型
-   * @param value 多令牌值
+   * @param value 令牌
+   * @param profile 令牌配置
+   *
    * @example
    * ```ts
-   * import { NORMAL_TOKEN } from 'vue-app-sdk'
-   *
    * // 应用仅存在单令牌
-   * Token.set('accessToken', { [NORMAL_TOKEN]: 'token value' })
+   * token.set('accessToken', 'token value', { format: 'jwt' })
    *
    * // 应用存在多令牌
-   * Token.set('accessToken', { [NORMAL_TOKEN]: 'token value', second: 'token value' })
+   * token.set('accessToken', 'token value', 'second', { format: 'jwt', jwtPrefix: 'Token' })
    * ```
    */
-  set(type: TokenType, value?: Record<TokenKey, string>, profile?: TokenProfile): void
-  set(
-    type: TokenType,
-    value?: string | Record<TokenKey, string>,
-    keyOrProfile: TokenKey | TokenProfile = NORMAL_TOKEN,
-    profile: TokenProfile = {},
-  ) {
-    const key = isString(keyOrProfile) ? keyOrProfile : NORMAL_TOKEN
-    profile = isString(keyOrProfile) ? profile : keyOrProfile
+  set(type: TokenType, value?: string, profile?: TokenProfile): void
+  /**
+   * 设置令牌状态
+   * @param state 令牌状态
+   * @param key 令牌键
+   * @param profile 令牌配置
+   *
+   * @example
+   * ```ts
+   * // 应用仅存在单令牌
+   * token.set({ accessToken: 'token value' }, { format: 'jwt' })
+   *
+   * // 应用存在多令牌
+   * token.set({ accessToken: 'token value' }, 'second', { format: 'jwt', jwtPrefix: 'Token' })
+   * ```
+   */
+  set(state: Partial<TokenState<false>>, key?: TokenKey, profile?: TokenProfile): void
+  /**
+   * 设置令牌状态
+   * @param state 令牌状态
+   * @param profile 令牌配置
+   *
+   * @example
+   * ```ts
+   * // 应用仅存在单令牌
+   * token.set({ accessToken: 'token value' }, { format: 'jwt' })
+   *
+   * // 应用存在多令牌
+   * token.set({ accessToken: 'token value' }, 'second', { format: 'jwt', jwtPrefix: 'Token' })
+   * ```
+   */
+  set(state: Partial<TokenState<false>>, profile?: TokenProfile): void
+  set(...args: any[]) {
+    if (isString(args[0])) {
+      const [type, value, ..._args] = args
+      args = [{ [type]: value }, ...args]
+    }
 
-    const record = !value || isString(value) ? { [key]: value } : value
-    assign(this._state.value[type], record)
+    // 处理参数
+    const [state, keyOrProfile, profileOrNil] = args
+    const key = (isString(keyOrProfile) ? keyOrProfile : Token.defaultKey) || Token.defaultKey
+    const profile = isString(keyOrProfile) ? profileOrNil : keyOrProfile
+
+    Object.entries(state).forEach(([type, value]) => {
+      assign(this._state.value[type], { [key]: value })
+    })
 
     if (!this._tokenProfile[key])
       this._tokenProfile[key] = {}
@@ -207,19 +240,19 @@ export class Token implements Plugin {
    * @example
    * ```ts
    * // 应用仅存在单令牌
-   * Token.clear('accessToken')
+   * token.clear('accessToken')
    *
    * // 应用存在多令牌
-   * Token.clear('accessToken', 'second')
+   * token.clear('accessToken', 'second')
    *
    * // 删除指定类型所有令牌
-   * Token.clear('accessToken', '')
+   * token.clear('accessToken', '')
    *
    * // 删除全部令牌
-   * Token.clear()
+   * token.clear()
    * ```
    */
-  clear = (type?: TokenType, key: TokenKey = NORMAL_TOKEN) => {
+  clear = (type?: TokenType, key: TokenKey = Token.defaultKey) => {
     if (type) {
       if (key)
         this.set(type, '', key)
@@ -237,28 +270,14 @@ export class Token implements Plugin {
    * @returns JWT(JSON Web Token) 格式令牌
    * @example
    * ```ts
-   * // 默认格式
-   * const token = createToken()
-   * token.set('accessToken', 'abcdefg')
-   *
-   * // 使用默认 `jwtPrefix`
-   * token.toJWT() // 'abcdefg'
-   *
-   * // 使用自定义 `prefix`
-   * token.toJWT('Bearer') // 'Bearer abcdefg'
-   *
-   * // JWT 格式
-   * const token = createToken({ format: 'jwt' })
-   * token.set('accessToken', 'abcdefg')
-   *
    * // 使用默认 `jwtPrefix`
    * token.toJWT() // 'Bearer abcdefg'
    *
-   * // 使用自定义 `prefix`
-   * token.toJWT('Auth') // 'Auth abcdefg'
+   * // 使用自定义 `jwtPrefix`
+   * token.toJWT('Token') // 'Token abcdefg''
    * ```
    */
-  toJWT = (prefix?: string, key: TokenKey = NORMAL_TOKEN) => {
+  toJWT = (prefix?: string, key: TokenKey = Token.defaultKey) => {
     if (prefix == null)
       prefix = this.getTokenProfile(key).jwtPrefix
     return [prefix, this.get('accessToken', key)].filter(Boolean).join(' ')
@@ -278,9 +297,14 @@ export class Token implements Plugin {
    * const token = createToken({ format: 'jwt' })
    * token.set('accessToken', 'abcdefg')
    * token.resolve() // 'Bearer abcdefg'
+   *
+   * // 单独设置
+   * const token = createToken()
+   * token.set('accessToken', 'abcdefg', { format: 'jwt', jwtPrefix: 'Token' })
+   * token.resolve() // 'Token abcdefg'
    * ```
    */
-  resolve = (key: TokenKey = NORMAL_TOKEN) => {
+  resolve = (key: TokenKey = Token.defaultKey) => {
     const profile = this.getTokenProfile(key)
     const format = toValue(profile.format) || 'normal'
     return format === 'jwt' ? this.toJWT(undefined, key) : this.get('accessToken', key)
@@ -290,7 +314,7 @@ export class Token implements Plugin {
    * 获取令牌配置
    * @param key 令牌键
    */
-  getTokenProfile = (key: TokenKey = NORMAL_TOKEN) => {
+  getTokenProfile = (key: TokenKey = Token.defaultKey) => {
     return Object.assign({}, this.options, this._tokenProfile[key]) as TokenProfile
   }
 
