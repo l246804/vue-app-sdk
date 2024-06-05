@@ -39,7 +39,7 @@ export const APP_SDK_KEY: InjectionKey<AppSDKInternalInstance> = Symbol('App SDK
 /**
  * 组件 `setup()` 中获取 AppSDK 实例
  */
-export function useAppSDK() {
+export function useAppSDK(): AppSDKInternalInstance {
   return inject(APP_SDK_KEY)!
 }
 
@@ -102,6 +102,11 @@ export class AppSDK extends AppSDKHookable<AppSDKHooks> {
   /**
    * 注册插件
    * @param plugin 插件
+   *
+   * @example
+   * ```ts
+   * sdk.use(Plugin1).use(Plugin2)
+   * ```
    */
   use = (plugin: Plugin) => {
     const index = this._plugins.findIndex((p) => p.id === plugin.id)
@@ -116,6 +121,12 @@ export class AppSDK extends AppSDKHookable<AppSDKHooks> {
   /**
    * 根据插件 ID 获取插件实例
    * @param id 插件 ID
+   *
+   * @example
+   * ```ts
+   * const Plugin1 = sdk.getPlugin(Plugin1ID)!
+   * Plugin1.run()
+   * ```
    */
   getPlugin = <T, ID extends Plugin['id'] = Plugin['id']>(id: ID) => {
     return this._plugins.find((p) => p.id === id) as IfUnknown<T, InferPlugin<ID>, T> | undefined
@@ -124,6 +135,14 @@ export class AppSDK extends AppSDKHookable<AppSDKHooks> {
   /**
    * 根据插件 ID 列表获取插件实例列表
    * @param ids 插件 ID 列表
+   *
+   * @example
+   * ```ts
+   * const [Plugin1, Plugin2] = sdk.getPlugins(Plugin1ID, Plugin2ID)
+   *
+   * Plugin1?.run()
+   * Plugin2?.test()
+   * ```
    */
   getPlugins = <IDs extends Plugin['id'][] = Plugin['id'][]>(...ids: IDs) => {
     return ids.map((id) => this.getPlugin(id)) as {

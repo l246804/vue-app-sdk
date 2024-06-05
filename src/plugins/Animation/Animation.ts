@@ -117,6 +117,8 @@ export class Animation implements Plugin {
 
   /**
    * 禁用动画
+   *
+   * ***注意：禁用时需设置 {@link https://cn.vuejs.org/api/built-in-components.html#transition Transition} 组件的 `css` 属性为 `false`，否则会影响切换效果！***
    */
   disable = () => {
     this.setEnabled(false)

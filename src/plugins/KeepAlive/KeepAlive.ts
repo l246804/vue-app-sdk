@@ -24,7 +24,6 @@ export interface KeepAliveOptions {
 
   /**
    * 删除路由缓存前执行，返回假值将阻止删除
-   * ```
    */
   beforeRouteRemove?: (route: LoadableRoute) => Awaitable<void | boolean>
 

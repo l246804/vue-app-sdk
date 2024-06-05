@@ -75,6 +75,16 @@ export class Auth implements Plugin {
   /**
    * 授权
    * @param list 授权列表
+   *
+   * @example
+   * ```ts
+   * // 设置用户权限编码列表
+   * fetchUser().then((user) => auth.empower(user.permissions))
+   *
+   * function fetchUser() {
+   *   return Promise.resolve({ id: 1, name: 'admin', permissions: ['list:add', 'list:edit'] })
+   * }
+   * ```
    */
   empower = (list: AuthList) => {
     this._list.value = list
@@ -84,15 +94,27 @@ export class Auth implements Plugin {
 
   /**
    * 验证功能权限
-   * @param features 功能列表
+   * @param codes 功能列表
    * @param op 操作符
+   *
+   * @example
+   * ```ts
+   * // 单功能鉴权
+   * auth.verify('list:add')
+   *
+   * // 多功能鉴权，满足单一功能编码
+   * auth.verify(['list:add', 'list:edit'], 'or')
+   *
+   * // 多功能鉴权，需同时满足所有功能编码
+   * auth.verify(['list:add', 'list:edit'], 'and')
+   * ```
    */
-  verify = (features: MaybeArray<string>, op: Operator = 'or') => {
+  verify = (codes: MaybeArray<string>, op: Operator = 'or') => {
     if (this.list === '*')
       return true
 
-    features = castArray(features)
-    if (features.length === 0)
+    codes = castArray(codes)
+    if (codes.length === 0)
       return false
 
     // 未授权提示
@@ -100,7 +122,7 @@ export class Auth implements Plugin {
       logger.warn('暂未设置授权列表！')
 
     const set = new Set(this.list)
-    return features[op === 'and' ? 'every' : 'some'](set.has.bind(set))
+    return codes[op === 'and' ? 'every' : 'some'](set.has.bind(set))
   }
 
   install = (sdk: AppSDKInternalInstance) => {
