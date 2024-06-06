@@ -216,7 +216,7 @@ export class Token implements Plugin {
   set(...args: any[]) {
     if (isString(args[0])) {
       const [type, value, ..._args] = args
-      args = [{ [type]: value }, ...args]
+      args = [{ [type]: value }, ..._args]
     }
 
     // 处理参数
