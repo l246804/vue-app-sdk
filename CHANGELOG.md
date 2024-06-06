@@ -1,5 +1,21 @@
 # Changelog
 
+## [3.2.0](https://github.com/l246804/vue-app-sdk/compare/v3.1.0...v3.2.0) (2024-06-06)
+
+
+### Chores
+
+* 🤖 补充 package.exports 导出配置 ([e0e95ac](https://github.com/l246804/vue-app-sdk/commit/e0e95aca4af05ff00ff7eecde2e0fd330818309b))
+* 🤖 补充代码函数示例 ([a4da9b5](https://github.com/l246804/vue-app-sdk/commit/a4da9b52877548a7d325fd74771bf715a0929e6d))
+* 🤖 更新 README.md ([9fe91ad](https://github.com/l246804/vue-app-sdk/commit/9fe91ad039302e1cc157f511338053458c1b2057))
+* 🤖 优化代码 ([2984ab5](https://github.com/l246804/vue-app-sdk/commit/2984ab5ec511d0f7f2a2d7fb932d29bbc5d566c6))
+* 🤖 getPlugins 类型描述返回的插件数组元素可能为空 ([31d75f2](https://github.com/l246804/vue-app-sdk/commit/31d75f2b7668b59b5aa3eb9a3cdc97e2e12808c4))
+
+
+### Refactors
+
+* 💡 重构 Token.set 在应用多令牌时的设置方式 ([b55534e](https://github.com/l246804/vue-app-sdk/commit/b55534e82f5c6ec4512fcf0755bf1bbeffe6ef06))
+
 ## [3.1.0](https://github.com/l246804/vue-app-sdk/compare/v3.0.4...v3.1.0) (2024-05-22)
 
 
