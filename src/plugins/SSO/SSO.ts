@@ -4,7 +4,7 @@ import type { LocationQuery, RouteLocationNormalized } from 'vue-router'
 
 export interface VerifyParamRecord {
   /**
-   * 参数名成
+   * 参数名称
    */
   name: string
   /**
@@ -39,6 +39,13 @@ export interface SSOOptions {
   verifyParams: VerifyParamType[] | Record<string, VerifyParamType[]>
   /**
    * 获取单点登录地址
+   * @example
+   * ```ts
+   * const sso = createSSO({
+   *   // 获取 SSO 地址
+   *   resolveSSOUri: (redirectUri) => `http://127.0.0.1:3000/login?redirect=${redirectUri}`
+   * })
+   * ```
    */
   resolveSSOUri: (redirectUri: string) => string
 }

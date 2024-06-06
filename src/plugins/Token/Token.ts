@@ -33,7 +33,7 @@ export type TokenKey = KeyOf<TokenRecord, string>
 export interface TokenProfile {
   /**
    * 访问令牌格式
-   * - `normal`: 默认格式，`resolve()` 存储即所得
+   * - `normal`: 普通格式，`resolve()` 存储即所得
    * - `jwt`: JWT(JSON Web Token) 格式，`resolve()` 返回 `toJWT()` 格式
    *
    * @default 'normal'
@@ -100,7 +100,7 @@ export class Token implements Plugin {
    * 默认令牌键
    */
   static get defaultKey() {
-    return '__normal__'
+    return '__PRIVATE__'
   }
 
   id = TOKEN_ID
@@ -288,7 +288,7 @@ export class Token implements Plugin {
    * @param key 令牌键
    * @example
    * ```ts
-   * // 默认格式
+   * // 普通格式
    * const token = createToken()
    * token.set('accessToken', 'abcdefg')
    * token.resolve() // 'abcdefg'

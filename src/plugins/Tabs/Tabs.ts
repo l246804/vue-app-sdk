@@ -29,8 +29,9 @@ export enum TabsReplaceResult {
 export interface TabsOptions extends StorageOptions {
   /**
    * 相同路由不同参数时处理标签页的模式
-   * - `normal`: 默认模式，会打开相同路由不同参数的标签页
+   * - `normal`: 普通模式，会打开相同路由不同参数的标签页
    * - `replace`: 替换模式，会先替换旧标签页为新标签页并激活
+   * @default 'normal'
    */
   mode?: 'normal' | 'replace'
   /**
@@ -658,7 +659,7 @@ export class Tabs implements Plugin {
 
   /**
    * 移除全部非固定标签页
-   * @param force 是否强制移除
+   * @param force 是否强制移除，将不会触发 `beforeRemove` 回调
    */
   removeAll = async (force = false) => {
     if (!force) {

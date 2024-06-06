@@ -152,23 +152,19 @@ export class RouterScroller implements Plugin {
   /**
    * 由于 `Transition` 动画可能导致元素自动还原滚动无效，此时可手动触发还原滚动
    * @example
-   * ```ts
-   * <script setup>
+   * ```html
+   * <script setup lang="ts">
    * import { useAppSDK, ROUTER_SCROLLER_ID } from 'vue-app-sdk'
    *
-   * const sdk = useAppSDK()
-   * const routerScroller = sdk.getPlugin(ROUTER_SCROLLER_ID)
+   * const routerScroller = useAppSDK().getPlugin(ROUTER_SCROLLER_ID)!
    *
-   * function handleRouterScroll() {
-   *   // 由于是在 before-enter 事件调用，元素可能仍然滚动无效
-   *   nextTick(() => {
-   *     routerScroller.trigger()
-   *   })
+   * function handleAfterEnter() {
+   *   routerScroller.trigger()
    * }
    * </script>
    *
    * <template>
-   *   <Transition @before-enter="handleRouterScroll">
+   *   <Transition @after-enter="handleAfterEnter">
    *     ...
    *   </Transition>
    * </template>

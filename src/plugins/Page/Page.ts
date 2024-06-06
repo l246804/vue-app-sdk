@@ -1,7 +1,13 @@
 import type { AppSDKInternalInstance, Plugin, PluginID } from 'vue-app-sdk'
 import type { AnyFn, Awaitable, MaybeFn, NoopFn, WithChildren } from '@rhao/types-base'
 import { createRouter, createWebHistory } from 'vue-router'
-import type { RouteComponent, RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router'
+import type {
+  RouteComponent,
+  RouteLocationNormalizedLoaded,
+  RouteMeta,
+  RouteRecordNormalized,
+  RouteRecordRaw,
+} from 'vue-router'
 import {
   arrayToMap,
   castFunction,
@@ -135,6 +141,17 @@ export class Page implements Plugin {
   }
 
   /**
+   * 获取路由上的页面元数据（浅拷贝）
+   * @param data `route` 或 `route.meta`
+   */
+  getPageMetadata = (
+    data: Pick<RouteRecordNormalized, 'meta'> | RouteMeta,
+  ): Partial<PageMetadata> => {
+    const meta = data.meta || data || {}
+    return assign({}, (meta as RouteMeta)._metadata)
+  }
+
+  /**
    * 将树形元数据列表扁平化为符合 `PageMetadata` 的页面元数据列表
    * @param data 树形元数据列表
    * @param options 配置项
@@ -192,7 +209,7 @@ export class Page implements Plugin {
    * 将元数据列表转为符合 `PageMetaWithChildren` 的树形页面元数据列表
    * @param data 元数据列表
    * @param options 配置项
-   * @param options.strict 严格模式，开启后将移除父子关联不存在的数据，且删除空子节点属性
+   * @param options.strict 严格模式，开启后将移除父子关联不存在的数据
    * @param options.clone 是否克隆源数据，避免转换时影响到源数据
    * @param options.calibrate 是否校准元数据，数据格式不符合 `PageMetadata` 时可以设为 `true`
    * @param options.completePath 是否补全路径，设为 `true` 后会对 `path` 进行拼接补全，可以在 `addRoute()` 时不受父子级限制
@@ -202,7 +219,7 @@ export class Page implements Plugin {
     data: T[],
     options: {
       /**
-       * 严格模式，开启后将移除父子关联不存在的数据，且删除空子节点属性
+       * 严格模式，开启后将移除父子关联不存在的数据
        */
       strict?: boolean
       /**
@@ -266,7 +283,7 @@ export class Page implements Plugin {
 
       routes.forEach((route) => {
         // 更改为完整路径
-        map[route.meta._metadata!.id].path = route.path
+        map[this.getPageMetadata(route).id!].path = route.path
       })
     }
 
@@ -340,7 +357,7 @@ export class Page implements Plugin {
        */
       format: MaybeRefOrGetter<'list' | 'tree'>
       /**
-       * 严格模式，开启后扁平化列表转为树形列表时将移除父子关联不存在的数据，且删除空子节点属性
+       * 严格模式，开启后扁平化列表转为树形列表时将移除父子关联不存在的数据
        */
       strict?: MaybeRefOrGetter<boolean>
       /**
@@ -369,7 +386,7 @@ export class Page implements Plugin {
        * 根据当前路由获取激活菜单标识
        * @default
        * ```ts
-       * (route) => route.meta._metadata.activeMenu || route.meta._metadata.name || ''
+       * (route) => this.getPageMetadata(route).activeMenu || this.getPageMetadata(route).name || ''
        * ```
        */
       resolveActiveMenu?: (
@@ -380,8 +397,8 @@ export class Page implements Plugin {
           visitablePages: PageMetadata[]
           visitableTreePages: PageMetadataWithChildren[]
           visitableMenus: PageMetadataWithChildren[]
-          visitablePageMap: Record<PropertyKey, PageMetadata>
-          visitableTreeLinkMap: Record<PropertyKey, PageMetadataWithChildren[]>
+          visitablePageMap: Record<PageMetadata['id'], PageMetadata>
+          visitableTreeLinkMap: Record<PageMetadata['id'], PageMetadataWithChildren[]>
         },
       ) => ActiveMenu
     },
@@ -395,7 +412,8 @@ export class Page implements Plugin {
       childrenFirst = true,
       completePath = true,
       resolveActiveMenu = (route) => {
-        return (route.meta._metadata?.activeMenu || route.meta._metadata?.name || '') as ActiveMenu
+        const metadata = this.getPageMetadata(route)
+        return (metadata.activeMenu || metadata.name || '') as ActiveMenu
       },
     } = options
 
@@ -527,7 +545,7 @@ export class Page implements Plugin {
 
     // ==================可访问的树形页面元数据链路映射==================
     const getVisitableTreeLinkMap = memoizeFn(() => {
-      const map: Record<PropertyKey, PageMetadataWithChildren[]> = {}
+      const map: Record<PageMetadata['id'], PageMetadataWithChildren[]> = {}
       eachTree(
         getVisitableTreePages(),
         (item, _, __, ___, links) => {
@@ -547,8 +565,10 @@ export class Page implements Plugin {
     const visitablePages = shallowRef<PageMetadata[]>([])
     const visitableTreePages = shallowRef<PageMetadataWithChildren[]>([])
     const visitableMenus = shallowRef<PageMetadataWithChildren[]>([])
-    const visitablePageMap = shallowRef<Record<PropertyKey, PageMetadata>>({})
-    const visitableTreeLinkMap = shallowRef<Record<PropertyKey, PageMetadataWithChildren[]>>({})
+    const visitablePageMap = shallowRef<Record<PageMetadata['id'], PageMetadata>>({})
+    const visitableTreeLinkMap = shallowRef<Record<PageMetadata['id'], PageMetadataWithChildren[]>>(
+      {},
+    )
 
     // ==================激活的菜单页面标识==================
     const router = this._sdk.router

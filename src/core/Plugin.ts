@@ -34,8 +34,7 @@ import type { AppSDKInternalInstance } from './SDK'
  * // => 1
  * ```
  */
-// eslint-disable-next-line unused-imports/no-unused-vars
-export interface PluginID<T = unknown> extends Symbol {}
+export interface PluginID<_ = unknown> extends Symbol {}
 
 /**
  * 卸载函数

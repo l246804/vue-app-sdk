@@ -3,7 +3,7 @@ import { Page } from './Page'
 
 export * from './Page'
 export * from './interface'
-export * from './macros'
+export * from './define'
 export * from './helper'
 
 /**

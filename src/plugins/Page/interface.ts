@@ -26,11 +26,11 @@ export interface PageMetadata {
    */
   name: string
   /**
-   * `route.query`，调用 `handleMenuClick` 时传递
+   * `route.query`，调用 `handleMenuClick` 时传递，支持 `JSON` 字符串
    */
   routeQuery?: string | Record<string, any>
   /**
-   * `route.params`，调用 `handleMenuClick` 时传递
+   * `route.params`，调用 `handleMenuClick` 时传递，支持 `JSON` 字符串
    */
   routeParams?: string | Record<string, any>
   /**
@@ -53,22 +53,22 @@ export interface PageMetadata {
    */
   activeMenu?: string
   /**
-   * 标题，支持多语言格式，推荐配合 `localeText` 使用
+   * 标题，支持国际化格式，推荐配合 `translateText` 使用
    * @example
    * ```ts
    * // page.ts
    * {
    *   // ...
    *   title: '页面1' // 普通文本格式
-   *   // title: { en: 'Page1', 'zh-cn': '页面1' } // 多语言格式
+   *   // title: { en: 'Page1', 'zh-cn': '页面1' } // 国际化格式
    * }
    *
    * // menu.ts
    * // 根据 i18n.global.locale 获取当前语言标题
-   * console.log(localeText(page.title)) // '页面1'
+   * console.log(translateText(page.title)) // '页面1'
    *
    * // 获取指定语言标题
-   * console.log(localeText(page.title, 'en')) // 'Page1'
+   * console.log(translateText(page.title, 'en')) // 'Page1'
    * ``
    */
   title: string | Record<string, string>
