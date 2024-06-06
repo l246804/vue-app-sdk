@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.1](https://github.com/l246804/vue-app-sdk/compare/v3.2.0...v3.2.1) (2024-06-06)
+
+
+### Bug Fixes
+
+* 🐛 修复 Token.set 设置无效问题 ([4e893ff](https://github.com/l246804/vue-app-sdk/commit/4e893ff108ec6f53982d960f97717997c7c83f89))
+
 ## [3.2.0](https://github.com/l246804/vue-app-sdk/compare/v3.1.0...v3.2.0) (2024-06-06)
 
 
