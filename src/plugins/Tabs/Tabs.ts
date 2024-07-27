@@ -36,6 +36,9 @@ export interface TabsOptions extends StorageOptions {
   mode?: 'normal' | 'replace'
   /**
    * 是否缓存标签页，可单独设置 `PageMetadata.isKeepAlive` 缓存指定页面
+   *
+   * ***注意：该功能依赖 `KeepAlive` 插件实现！***
+   *
    * @default true
    */
   keepAlive?: boolean
