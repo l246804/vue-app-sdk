@@ -1,28 +1,15 @@
-import type { I18n } from 'vue-i18n'
-import { isString } from 'nice-fns'
+import type { MaybeRefOrGetter } from 'vue'
+import { logger } from '@/utils'
+import { isObject, isString } from 'nice-fns'
+import { toValue } from 'vue'
 
 /**
- * I18n 实例
- */
-export type I18nInstance = I18n
-
-/**
- * 传统的 i18n
- */
-export type LegacyI18n = I18n<{}, {}, {}, string, true>
-
-/**
- * 现代的 i18n
- */
-export type ModernI18n = I18n<{}, {}, {}, string, false>
-
-/**
- * 根据 i18n 实例创建本地翻译函数，用于处理动态国际化文本
+ * 根据默认语言创建本地翻译函数，用于处理动态国际化文本
  *
  * @example
  * ```ts
  * // locale.ts
- * export const translateText = createTranslator(i18n)
+ * export const translateText = createTranslator(() => i18n.value.locale.value)
  *
  * // menu.ts
  * const menu = { title: '菜单' }
@@ -39,29 +26,33 @@ export type ModernI18n = I18n<{}, {}, {}, string, false>
  * const menuTitle = computed(() => translateText(menu.title)) // 支持响应式动态变更
  * ```
  */
-export function createTranslator(i18n: I18nInstance) {
+export function createTranslator(localeGetter: MaybeRefOrGetter<string>) {
   return function translator(message: string | Record<string, string> = '', locale = '') {
     if (isString(message) || !message)
       return message
     if (!locale) {
-      locale
-        = i18n.mode === 'legacy'
-          ? (i18n as LegacyI18n).global.locale
-          : (i18n as ModernI18n).global.locale.value
+      let baseLocale = toValue(localeGetter)
+      // 兼容性支持 i18n 实例
+      if (isObject(baseLocale) && 'global' in baseLocale) {
+        logger.warn('localeGetter 后续将不再支持 i18n 实例，请使用 MaybeRefOrGetter<string> 类型值替代！')
+        const i18n = baseLocale as any
+        baseLocale = i18n.mode === 'legacy' ? i18n.global.locale : i18n.global.locale.value
+      }
+      locale = baseLocale
     }
     return message[locale]
   }
 }
 
 /**
- * 根据 i18n 实例创建本地化文本函数，用于处理动态多语言文本
+ * 根据默认语言创建本地翻译函数，用于处理动态国际化文本
  *
  * @deprecated 推荐使用 `createTranslator` 代替
  *
  * @example
  * ```ts
  * // locale.ts
- * export const localeText = createLocaleText(i18n)
+ * export const localeText = createLocaleText(() => i18n.value.locale.value)
  *
  * // menu.ts
  * const menu = { title: '菜单' }
