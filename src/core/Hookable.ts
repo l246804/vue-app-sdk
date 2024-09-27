@@ -1,38 +1,13 @@
-import type { KeyOf } from '@rhao/types-base'
-import type { HookCallback } from 'hookable'
+import type { HookCallback, HookKeys, InferCallback } from 'easy-hookable'
 import { tryOnScopeDispose } from '@vueuse/core'
-import { Hookable } from 'hookable'
-
-type InferCallback<HT, HN extends keyof HT> = HT[HN] extends HookCallback ? HT[HN] : never
-
-const defaultTask = { run: (function_: HookCallback) => function_() }
-const _createTask = () => defaultTask
-// @ts-expect-error 代码无误
-const createTask = typeof console.createTask !== 'undefined' ? console.createTask : _createTask
-
-function syncSerialTaskCaller<
-  T extends HookCallback = HookCallback,
-  P extends unknown[] = Parameters<HookCallback>,
->(hooks: T[], args: P) {
-  const name = args.shift()
-  const task = createTask(name)
-  return hooks.forEach((hookFunction) => task.run(() => hookFunction(...args)))
-}
+import { Hookable } from 'easy-hookable'
 
 export class AppSDKHookable<
   HooksT extends Record<string, any> = Record<string, HookCallback>,
-  HookNameT extends KeyOf<HooksT, string> = KeyOf<HooksT, string>,
+  HookNameT extends HookKeys<HooksT> = HookKeys<HooksT>,
 > extends Hookable<HooksT, HookNameT> {
   constructor() {
     super()
-  }
-
-  callHookSync = <NameT extends HookNameT>(
-    name: NameT,
-    ...arguments_: Parameters<InferCallback<HooksT, NameT>>
-  ) => {
-    arguments_.unshift(name)
-    this.callHookWith(syncSerialTaskCaller, name, ...arguments_)
   }
 
   /**
