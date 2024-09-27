@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.2.2](https://github.com/l246804/vue-app-sdk/compare/v3.2.1...v3.2.2) (2024-09-27)
+
+
+### Chores
+
+* 🤖 优化注释内容 ([a3343d1](https://github.com/l246804/vue-app-sdk/commit/a3343d17c97aaccf19c6969323d7bbacee43ebfe))
+* 🤖 createTranslator 移除对 vue-i18n 的依赖 ([84e1f74](https://github.com/l246804/vue-app-sdk/commit/84e1f74ffd292006c875a49e4321cd4b3d4a51fc))
+* 🤖 replace hookable to easy-hookable ([1ca9fc3](https://github.com/l246804/vue-app-sdk/commit/1ca9fc3cef36482811b9dcd4128ba38c7ed8b184))
+* 🤖 update deps ([e4044c1](https://github.com/l246804/vue-app-sdk/commit/e4044c16a75264c5d2cea170f2b403c24cd86792))
+
+
+### Styles
+
+* 💄 format code style ([9850fbc](https://github.com/l246804/vue-app-sdk/commit/9850fbcf1727b506451b2f42dbf8a654cc634e20))
+
 ## [3.2.1](https://github.com/l246804/vue-app-sdk/compare/v3.2.0...v3.2.1) (2024-06-06)
 
 
