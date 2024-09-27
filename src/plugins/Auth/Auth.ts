@@ -1,8 +1,8 @@
-import { type Directive, ref } from 'vue'
-import type { AppSDKInternalInstance, Plugin, PluginID } from 'vue-app-sdk'
 import type { MaybeArray } from '@rhao/types-base'
-import { castArray } from 'nice-fns'
+import type { AppSDKInternalInstance, Plugin, PluginID } from 'vue-app-sdk'
 import { logger } from '@/utils'
+import { castArray } from 'nice-fns'
+import { type Directive, ref } from 'vue'
 
 /**
  * 功能授权列表，`*` 代表所有权限

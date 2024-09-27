@@ -34,6 +34,7 @@ import type { AppSDKInternalInstance } from './SDK'
  * // => 1
  * ```
  */
+// eslint-disable-next-line ts/no-wrapper-object-types
 export interface PluginID<_ = unknown> extends Symbol {}
 
 /**

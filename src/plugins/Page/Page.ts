@@ -1,6 +1,6 @@
-import type { AppSDKInternalInstance, Plugin, PluginID } from 'vue-app-sdk'
 import type { AnyFn, Awaitable, MaybeFn, NoopFn, WithChildren } from '@rhao/types-base'
-import { createRouter, createWebHistory } from 'vue-router'
+import type { ToTreeArrayOptions } from 'nice-fns'
+import type { AppSDKInternalInstance, Plugin, PluginID } from 'vue-app-sdk'
 import type {
   RouteComponent,
   RouteLocationNormalizedLoaded,
@@ -8,6 +8,8 @@ import type {
   RouteRecordNormalized,
   RouteRecordRaw,
 } from 'vue-router'
+import type { PageMetadata, PageMetadataWithChildren, RoleList } from './interface'
+import { assign, syncComponentName } from '@/utils'
 import {
   arrayToMap,
   castFunction,
@@ -22,11 +24,9 @@ import {
   toArrayTree,
   toTreeArray,
 } from 'nice-fns'
-import type { ToTreeArrayOptions } from 'nice-fns'
-import { type MaybeRefOrGetter, computed, isRef, shallowRef, toValue, watch } from 'vue'
+import { computed, isRef, type MaybeRefOrGetter, shallowRef, toValue, watch } from 'vue'
+import { createRouter, createWebHistory } from 'vue-router'
 import { ANIMATION_ID } from '../Animation'
-import type { PageMetadata, PageMetadataWithChildren, RoleList } from './interface'
-import { assign, syncComponentName } from '@/utils'
 
 export interface PageOptions {
   /**

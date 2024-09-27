@@ -1,8 +1,6 @@
+import type { StorageOptions } from '@/types'
+import type { Nullish } from '@rhao/types-base'
 import type { RemovableRef, Serializer } from '@vueuse/core'
-import { useStorage, useStorageAsync } from '@vueuse/core'
-import { ref, shallowRef } from 'vue'
-import { createLogger, isArray, isFunction } from 'nice-fns'
-import { loadRouteLocation } from 'vue-router'
 import type {
   RouteComponent,
   RouteLocationMatched,
@@ -10,8 +8,10 @@ import type {
   RouteLocationNormalizedLoaded,
   RouteRecordNormalized,
 } from 'vue-router'
-import type { Nullish } from '@rhao/types-base'
-import type { StorageOptions } from '@/types'
+import { useStorage, useStorageAsync } from '@vueuse/core'
+import { createLogger, isArray, isFunction } from 'nice-fns'
+import { ref, shallowRef } from 'vue'
+import { loadRouteLocation } from 'vue-router'
 
 export const logger = createLogger('VueAppSDK')
 
@@ -37,7 +37,7 @@ export function createPersistentRef<T, A extends boolean>(
 }
 
 /**
- * 是否时 ES 模块
+ * 是否是 ES 模块
  */
 export function isESModule(obj) {
   return obj.__esModule || obj[Symbol.toStringTag] === 'Module'

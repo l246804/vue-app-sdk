@@ -1,9 +1,9 @@
-import type { AppSDKInternalInstance, Plugin, PluginID, StorageOptions } from 'vue-app-sdk'
-import type { MaybeRefOrGetter, Ref } from 'vue'
-import { toValue } from 'vue'
-import { isString } from 'nice-fns'
 import type { KeyOf } from '@rhao/types-base'
+import type { MaybeRefOrGetter, Ref } from 'vue'
+import type { AppSDKInternalInstance, Plugin, PluginID, StorageOptions } from 'vue-app-sdk'
 import { assign, createPersistentRef } from '@/utils'
+import { isString } from 'nice-fns'
+import { toValue } from 'vue'
 
 /**
  * 访问令牌格式

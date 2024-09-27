@@ -1,11 +1,11 @@
 import type { Awaitable } from '@rhao/types-base'
-import type { AppSDKInternalInstance, Plugin, PluginID } from 'vue-app-sdk'
-import { NavigationDirection } from 'vue-app-sdk'
-import { isFunction } from 'nice-fns'
 import type { MaybeRefOrGetter, Ref } from 'vue'
-import { isRef, nextTick, ref, toValue, watch } from 'vue'
+import type { AppSDKInternalInstance, Plugin, PluginID } from 'vue-app-sdk'
 import type { RouteLocationNormalized, RouteLocationNormalizedLoaded } from 'vue-router'
 import { logger } from '@/utils'
+import { isFunction } from 'nice-fns'
+import { isRef, nextTick, ref, toValue, watch } from 'vue'
+import { NavigationDirection } from 'vue-app-sdk'
 
 /**
  * Scroll position similar to

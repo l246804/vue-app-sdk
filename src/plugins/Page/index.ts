@@ -1,10 +1,10 @@
 import type { PageOptions } from './Page'
 import { Page } from './Page'
 
-export * from './Page'
-export * from './interface'
 export * from './define'
 export * from './helper'
+export * from './interface'
+export * from './Page'
 
 /**
  * 创建应用页面管理插件

@@ -1,6 +1,6 @@
 import type { KeyOf } from '@rhao/types-base'
-import { tryOnScopeDispose } from '@vueuse/core'
 import type { HookCallback } from 'hookable'
+import { tryOnScopeDispose } from '@vueuse/core'
 import { Hookable } from 'hookable'
 
 type InferCallback<HT, HN extends keyof HT> = HT[HN] extends HookCallback ? HT[HN] : never

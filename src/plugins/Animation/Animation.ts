@@ -1,11 +1,11 @@
+import type { MaybeRefOrGetter } from 'vue'
+import { nextTick, ref, toValue } from 'vue'
 import {
   type AppSDKInternalInstance,
   NavigationDirection,
   type Plugin,
   type PluginID,
 } from 'vue-app-sdk'
-import type { MaybeRefOrGetter } from 'vue'
-import { nextTick, ref, toValue } from 'vue'
 
 export interface AnimationOptions {
   /**

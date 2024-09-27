@@ -1,14 +1,14 @@
+import type { StorageOptions } from '@/types'
+import type { NoopFn, NotNullish, Simplify } from '@rhao/types-base'
 /* eslint-disable ts/method-signature-style */
 import type { InjectionKey, ShallowRef } from 'vue'
-import { inject, shallowReactive, shallowReadonly, watch } from 'vue'
-import type { NoopFn, NotNullish, Simplify } from '@rhao/types-base'
-import { isNavigationFailure, useRoute } from 'vue-router'
 import type { RouteLocationNormalized } from 'vue-router'
-import { pick } from 'nice-fns'
-import { type AppSDKInternalInstance, useAppSDK } from './SDK'
 import type { Plugin, PluginID } from './Plugin'
 import { assign, createPersistentRef } from '@/utils'
-import type { StorageOptions } from '@/types'
+import { pick } from 'nice-fns'
+import { inject, shallowReactive, shallowReadonly, watch } from 'vue'
+import { isNavigationFailure, useRoute } from 'vue-router'
+import { type AppSDKInternalInstance, useAppSDK } from './SDK'
 
 /**
  * 路由导航方向

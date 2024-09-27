@@ -1,11 +1,11 @@
-import { type App, type InjectionKey, inject } from 'vue'
-import type { Router } from 'vue-router'
 import type { AnyFn, IfUnknown, SetRequired } from '@rhao/types-base'
-import { AppSDKHookable } from './Hookable'
-import type { RouterOptions } from './Router'
-import { Router as AppSDKRouter } from './Router'
+import type { Router } from 'vue-router'
 import type { InferPlugin, Plugin } from './Plugin'
+import type { RouterOptions } from './Router'
 import { logger } from '@/utils'
+import { type App, inject, type InjectionKey } from 'vue'
+import { AppSDKHookable } from './Hookable'
+import { Router as AppSDKRouter } from './Router'
 
 /**
  * AppSDK 内部实例

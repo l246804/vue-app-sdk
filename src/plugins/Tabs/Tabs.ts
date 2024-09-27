@@ -1,13 +1,13 @@
-import type { AppSDKInternalInstance, Plugin, PluginID, StorageOptions } from 'vue-app-sdk'
-import { arrayToMap, isArray, isFunction, noop, once, pick } from 'nice-fns'
-import type { MaybeRefOrGetter, Ref } from 'vue'
-import { isRef, nextTick, ref, toValue, watch } from 'vue'
 import type { Awaitable, MaybeNullish, NotNullish } from '@rhao/types-base'
+import type { MaybeRefOrGetter, Ref } from 'vue'
+import type { AppSDKInternalInstance, Plugin, PluginID, StorageOptions } from 'vue-app-sdk'
 import type { RouteLocationNormalized } from 'vue-router'
 import type { PageMetadata } from '../Page'
-import { KEEP_ALIVE_ID } from '../KeepAlive'
 import type { TabPage } from './interface'
 import { assign, createPersistentRef, logger, resolveComponentNameByRoute } from '@/utils'
+import { arrayToMap, isArray, isFunction, noop, once, pick } from 'nice-fns'
+import { isRef, nextTick, ref, toValue, watch } from 'vue'
+import { KEEP_ALIVE_ID } from '../KeepAlive'
 
 export type TabsRawPage = PageMetadata
 

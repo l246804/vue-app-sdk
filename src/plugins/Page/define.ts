@@ -1,6 +1,6 @@
-import { eachTree } from 'nice-fns'
 import type { SetOptional, WithChildren } from '@rhao/types-base'
 import type { PageMetadata } from './interface'
+import { eachTree } from 'nice-fns'
 
 type _PageMetadata = SetOptional<PageMetadata, 'id'>
 

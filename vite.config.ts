@@ -1,8 +1,8 @@
-import { resolve } from 'node:path'
+import type { OutputOptions } from 'rollup'
 import type { UserConfig } from 'vite'
+import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
 import Dts from 'vite-plugin-dts'
-import type { OutputOptions } from 'rollup'
 import pkg from './package.json'
 
 // 输出格式后缀

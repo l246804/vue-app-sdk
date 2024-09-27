@@ -11,6 +11,7 @@ export default antfu({
     overrides: {
       'ts/no-namespace': ['off'],
       'ts/ban-types': ['off'],
+      'ts/no-empty-object-type': ['off'],
     },
   },
   stylistic: {

@@ -1,14 +1,14 @@
 import type { Awaitable } from '@rhao/types-base'
+import type { MaybeRefOrGetter, Ref } from 'vue'
+import { type LoadableRoute, resolveComponentNameByRoute } from '@/utils'
+import { isFunction, isString, once } from 'nice-fns'
+import { isRef, nextTick, ref, shallowRef, toValue, watch } from 'vue'
 import {
   type AppSDKInternalInstance,
   NavigationDirection,
   type Plugin,
   type PluginID,
 } from 'vue-app-sdk'
-import { isFunction, isString, once } from 'nice-fns'
-import type { MaybeRefOrGetter, Ref } from 'vue'
-import { isRef, nextTick, ref, shallowRef, toValue, watch } from 'vue'
-import { type LoadableRoute, resolveComponentNameByRoute } from '@/utils'
 
 export interface KeepAliveOptions {
   /**

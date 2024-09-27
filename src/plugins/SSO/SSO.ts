@@ -1,6 +1,6 @@
 import type { Plugin, PluginID } from 'vue-app-sdk'
-import { isArray, isString } from 'nice-fns'
 import type { LocationQuery, RouteLocationNormalized } from 'vue-router'
+import { isArray, isString } from 'nice-fns'
 
 export interface VerifyParamRecord {
   /**

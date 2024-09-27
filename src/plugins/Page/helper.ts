@@ -1,5 +1,5 @@
-import { isString } from 'nice-fns'
 import type { I18n } from 'vue-i18n'
+import { isString } from 'nice-fns'
 
 /**
  * I18n 实例
