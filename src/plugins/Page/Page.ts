@@ -586,8 +586,12 @@ export class Page implements Plugin {
     })
 
     // 监听变更
-    if (isRef(pages) || isFunction(pages))
+    if (isRef(pages) || isFunction(pages)) {
       watch(pages, update, { immediate: true, flush: 'sync', deep: true })
+    }
+    else {
+      update()
+    }
 
     function update() {
       // 删除旧缓存
