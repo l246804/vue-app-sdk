@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.2.3](https://github.com/l246804/vue-app-sdk/compare/v3.2.2...v3.2.3) (2024-09-29)
+
+
+### Chores
+
+* 🤖 优化 Page.createStates ([5defd95](https://github.com/l246804/vue-app-sdk/commit/5defd9518e647f1a8fbafbd16c5ede17ac95b7bb))
+
 ## [3.2.2](https://github.com/l246804/vue-app-sdk/compare/v3.2.1...v3.2.2) (2024-09-27)
 
 
