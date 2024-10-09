@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.0](https://github.com/l246804/vue-app-sdk/compare/v3.2.3...v3.3.0) (2024-10-09)
+
+
+### Features
+
+* 🎸 Page.resolveLink 支持获取自身元数据的外链地址 ([e179e23](https://github.com/l246804/vue-app-sdk/commit/e179e234e2cac2535f3b857795f2fcc7a1130043))
+
 ## [3.2.3](https://github.com/l246804/vue-app-sdk/compare/v3.2.2...v3.2.3) (2024-09-29)
 
 
