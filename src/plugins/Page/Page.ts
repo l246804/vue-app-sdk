@@ -681,12 +681,28 @@ export class Page implements Plugin {
   }
 
   /**
-   * 获取页面元数据设置的外链地址，设为假值时返回空字符串
+   * 获取页面元数据设置的外链地址
    * @param page 页面元数据
+   * @param selfLink 获取自身的外链地址（等同于 `page.link=true`）
    * @returns 外链地址
+   *
+   * @example
+   * ```ts
+   * resolveLink({ path: '/test', name: 'test', link: true })
+   * // => '/test'
+   *
+   * resolveLink({ path: '/test', name: 'test', link: '//www.test.com' })
+   * // => '//www.test.com'
+   *
+   * resolveLink({ path: '/test', name: 'test' })
+   * // => ''
+   *
+   * resolveLink({ path: '/test/:id', name: 'test', routeParams: { id: 1 } }, true)
+   * // => '/test/1'
+   * ```
    */
-  resolveLink = (page: PageMetadata) => {
-    if (page.link === true) {
+  resolveLink = (page: PageMetadata, selfLink = false) => {
+    if (page.link === true || selfLink) {
       const { router } = this._sdk
       const query: Record<string, any> = {}
       const params: Record<string, any> = {}
