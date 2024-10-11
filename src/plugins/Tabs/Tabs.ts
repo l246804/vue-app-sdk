@@ -5,7 +5,7 @@ import type { RouteLocationNormalized } from 'vue-router'
 import type { PageMetadata } from '../Page'
 import type { TabPage } from './interface'
 import { assign, createPersistentRef, logger, resolveComponentNameByRoute } from '@/utils'
-import { arrayToMap, isArray, isFunction, noop, once, pick } from 'nice-fns'
+import { arrayToMap, isArray, isFunction, isString, noop, once, parseJSON, pick } from 'nice-fns'
 import { isRef, nextTick, ref, toValue, watch } from 'vue'
 import { KEEP_ALIVE_ID } from '../KeepAlive'
 
@@ -51,7 +51,7 @@ export interface TabsOptions extends StorageOptions {
    * 页面元数据转为标签页属性
    * @param data 页面元数据
    */
-  rawPageToTabPage?: (data: PageMetadata) => Omit<TabPage, 'id' | 'fullPath' | 'componentName'>
+  rawPageToTabPage?: (data: TabsRawPage) => Omit<TabPage, 'id' | 'fullPath' | 'componentName'>
   /**
    * 是否为有效的页面元数据，指可以被转为标签页的元数据
    * @param data 页面元数据
@@ -68,11 +68,11 @@ export interface TabsOptions extends StorageOptions {
    * })
    * ```
    */
-  isValidRawPage?: (data: PageMetadata) => boolean
+  isValidRawPage?: (data: TabsRawPage) => boolean
   /**
    * 根据页面元数据添加标签页前的回调处理，若返回假值则取消添加
    */
-  beforeAdd?: (page: PageMetadata) => Awaitable<void | boolean>
+  beforeAdd?: (page: TabsRawPage) => Awaitable<void | boolean>
   /**
    * `mode` 设为 `replace` 时，替换标签页前的回调处理，根据返回结果进行处理
    */
@@ -104,7 +104,7 @@ export type TabsSideType = 'left' | 'right'
 export const TABS_ID: PluginID<Tabs> = Symbol('tabs')
 
 function getMetadata(route: { meta: any }) {
-  return route.meta._metadata || ({} as PageMetadata)
+  return (route.meta._metadata || {}) as TabsRawPage
 }
 
 const defaultRawPageToTabPage: NotNullish<TabsOptions['rawPageToTabPage']> = (data) => ({
@@ -113,10 +113,6 @@ const defaultRawPageToTabPage: NotNullish<TabsOptions['rawPageToTabPage']> = (da
 })
 
 const defaultIsValidRawPage: NotNullish<TabsOptions['isValidRawPage']> = () => true
-
-function rawPageToRoute(data: PageMetadata): RouteForGenerableID {
-  return { fullPath: data.path, meta: { _metadata: data } }
-}
 
 const updatableTabPageProps = [
   'isAffix',
@@ -352,17 +348,40 @@ export class Tabs implements Plugin {
   }
 
   /**
+   * 根据页面元数据获取 `fullPath`
+   */
+  private _resolveFullPath = (page: TabsRawPage) => {
+    const { router } = this._sdk
+    const query: Record<string, any> = {}
+    const params: Record<string, any> = {}
+
+    // 处理路由参数
+    if (page.routeQuery)
+      assign(query, isString(page.routeQuery) ? parseJSON(page.routeQuery) : page.routeQuery)
+    if (page.routeParams)
+      assign(params, isString(page.routeParams) ? parseJSON(page.routeParams) : page.routeParams)
+
+    return router.resolve({ name: page.name, query, params }).fullPath
+  }
+
+  /**
    * 根据页面元数据列表设置固定标签页列表
    * @param data 页面元数据列表
    */
-  setAffixTabPagesByRawPages = (data: PageMetadata[]) => {
+  setAffixTabPagesByRawPages = (data: TabsRawPage[]) => {
     const affixTabPages: TabPage[] = []
     data.forEach((item) => {
-      if (!this.isValidRawPage(item))
+      if (!this.isValidRawPage(item) || !this.rawPageToTabPage(item).isAffix)
         return
-      const tabPage = this.createTabPage(rawPageToRoute(item))
-      if (tabPage.isAffix)
-        affixTabPages.push(tabPage)
+
+      affixTabPages.push(
+        this.createTabPage({
+          fullPath: this._resolveFullPath(item),
+          meta: {
+            _metadata: item,
+          },
+        } as RouteForGenerableID),
+      )
     })
     this.setTabPages(affixTabPages)
   }
@@ -422,7 +441,7 @@ export class Tabs implements Plugin {
    * 根据页面元数据更新标签页列表
    * @param data 页面元数据列表或映射
    */
-  updateTabPagesByRawPages = (data: PageMetadata[] | Record<string, PageMetadata | undefined>) => {
+  updateTabPagesByRawPages = (data: TabsRawPage[] | Record<string, TabsRawPage | undefined>) => {
     const map = isArray(data) ? arrayToMap(data, { primaryKey: 'id', useMap: false }) : data
     this.pages.forEach((page) => {
       const mapPage = map[page.pageId]
