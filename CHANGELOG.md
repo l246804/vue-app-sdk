@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.1](https://github.com/l246804/vue-app-sdk/compare/v3.3.0...v3.3.1) (2024-10-11)
+
+
+### Chores
+
+* 🤖 优化 Tabs 插件类型 ([fdd1a6a](https://github.com/l246804/vue-app-sdk/commit/fdd1a6a5cd4ee5da59f2eeafd1564f5e649ba43d))
+
 ## [3.3.0](https://github.com/l246804/vue-app-sdk/compare/v3.2.3...v3.3.0) (2024-10-09)
 
 
