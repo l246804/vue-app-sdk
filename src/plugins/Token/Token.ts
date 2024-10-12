@@ -306,8 +306,9 @@ export class Token implements Plugin {
    */
   resolve = (key: TokenKey = Token.defaultKey) => {
     const profile = this.getTokenProfile(key)
-    const format = toValue(profile.format) || 'normal'
-    return format === 'jwt' ? this.toJWT(undefined, key) : this.get('accessToken', key)
+    return toValue(profile.format) === 'jwt'
+      ? this.toJWT(profile.jwtPrefix, key)
+      : this.get('accessToken', key)
   }
 
   /**
@@ -315,7 +316,11 @@ export class Token implements Plugin {
    * @param key 令牌键
    */
   getTokenProfile = (key: TokenKey = Token.defaultKey) => {
-    return Object.assign({}, this.options, this._tokenProfile[key]) as TokenProfile
+    return Object.assign(
+      { format: 'normal', jwtPrefix: 'Bearer' } as TokenProfile,
+      this.options,
+      this._tokenProfile[key],
+    ) as TokenProfile
   }
 
   install = (sdk: AppSDKInternalInstance) => {
