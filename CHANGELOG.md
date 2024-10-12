@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.2](https://github.com/l246804/vue-app-sdk/compare/v3.3.1...v3.3.2) (2024-10-12)
+
+
+### Bug Fixes
+
+* 🐛 修复 Token 插件功能丢失默认值 ([842b4b3](https://github.com/l246804/vue-app-sdk/commit/842b4b3ca0fe5ad2f47ad542afd6446273f6dff9))
+
 ## [3.3.1](https://github.com/l246804/vue-app-sdk/compare/v3.3.0...v3.3.1) (2024-10-11)
 
 
