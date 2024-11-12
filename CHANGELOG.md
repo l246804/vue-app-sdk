@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.3](https://github.com/l246804/vue-app-sdk/compare/v3.3.2...v3.3.3) (2024-11-12)
+
+
+### Bug Fixes
+
+* 🐛 修复 Tabs.befreAdd 在不需要添加时仍然触发 ([a520c70](https://github.com/l246804/vue-app-sdk/commit/a520c703891bf8f3d508ec4cfbc16ea3682a5023))
+
 ## [3.3.2](https://github.com/l246804/vue-app-sdk/compare/v3.3.1...v3.3.2) (2024-10-12)
 
 
