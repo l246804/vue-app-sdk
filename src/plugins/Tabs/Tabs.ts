@@ -734,10 +734,7 @@ export class Tabs implements Plugin {
     route: RouteForGenerableID & { matched?: RouteLocationNormalized['matched'] },
   ) => {
     const page = getMetadata(route)
-    const { beforeAdd = beforeDefaults.add } = this.options
-
-    // 没有页面元数据或不允许添加时跳过
-    if (!page || !(await beforeAdd(page)))
+    if (!page)
       return
 
     const tabPage = this.createTabPage(route)
@@ -746,9 +743,15 @@ export class Tabs implements Plugin {
 
     // 不存在相同标签页时添加
     if (!isExist) {
+      const { beforeAdd = beforeDefaults.add } = this.options
+      if (!(await beforeAdd(page))) {
+        return
+      }
+
       const route = this._routes.find((r) => getMetadata(r).id === tabPage.pageId)
-      if (route)
+      if (route) {
         tabPage.componentName = await resolveComponentNameByRoute(route)
+      }
       this.pages.push(tabPage)
     }
 
