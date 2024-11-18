@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.4](https://github.com/l246804/vue-app-sdk/compare/v3.3.3...v3.3.4) (2024-11-18)
+
+
+### Bug Fixes
+
+* 🐛 修复 Auth 插件指令元素移除失败 ([e5a4f6c](https://github.com/l246804/vue-app-sdk/commit/e5a4f6c08955f5af43cf763d62d8ea220a8800b6))
+
 ## [3.3.3](https://github.com/l246804/vue-app-sdk/compare/v3.3.2...v3.3.3) (2024-11-12)
 
 
