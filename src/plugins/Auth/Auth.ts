@@ -42,7 +42,7 @@ export class Auth implements Plugin {
     this.directive = {
       mounted(el, binding) {
         const { value, arg } = binding
-        if (auth.verify(value, arg as Operator))
+        if (!auth.verify(value, arg as Operator))
           el.remove()
       },
     }
