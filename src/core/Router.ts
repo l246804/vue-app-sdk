@@ -6,7 +6,7 @@ import type { RouteLocationNormalized } from 'vue-router'
 import type { Plugin, PluginID } from './Plugin'
 import { assign, createPersistentRef } from '@/utils'
 import { pick } from 'nice-fns'
-import { inject, shallowReactive, shallowReadonly, watch } from 'vue'
+import { inject, ref, shallowReactive, shallowReadonly, watch } from 'vue'
 import { isNavigationFailure, useRoute } from 'vue-router'
 import { type AppSDKInternalInstance, useAppSDK } from './SDK'
 
@@ -206,6 +206,11 @@ export class Router implements Plugin {
   private _detailsRecord: ShallowRef<RouteDetailsRecord>
 
   /**
+   * 是否正在导航
+   */
+  private _isNavigating = ref(false)
+
+  /**
    * 锁定 `beforeOnce`
    */
   private _onceLocked = false
@@ -296,6 +301,18 @@ export class Router implements Plugin {
     // =======================初始化记录位置=======================
     router.isReady().then(() => {
       this.latestPosition = this.getCurrentPosition()
+    })
+
+    // =======================正在导航=======================
+    router.beforeEach(() => {
+      this._isNavigating.value = true
+    })
+    router.afterEach(() => {
+      this._isNavigating.value = false
+    })
+    Object.defineProperty(router, 'isNavigating', {
+      enumerable: true,
+      get: () => this._isNavigating.value,
     })
 
     // =======================识别方向=======================
@@ -440,6 +457,10 @@ declare module 'vue-app-sdk' {
 
 declare module 'vue-router' {
   export interface Router {
+    /**
+     * 是否正在导航
+     */
+    readonly isNavigating: boolean
     /**
      * 同 `router.beforeEach`，区别在于仅单次触发，直到 `afterEach` 被执行后可下次触发，常用于避免在 `beforeEach` 内重定向再次触发 `beforeEach` 钩子的回调处理
      */
