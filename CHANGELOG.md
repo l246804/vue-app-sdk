@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.6](https://github.com/l246804/vue-app-sdk/compare/v3.3.5...v3.3.6) (2024-11-28)
+
+
+### Bug Fixes
+
+* 🐛 修复 useRouteDetails 无法获取到其他页面传递的数据 ([4e75ee3](https://github.com/l246804/vue-app-sdk/commit/4e75ee38fd9da1ce327b6451e763e3db8b3dc785))
+
 ## [3.3.5](https://github.com/l246804/vue-app-sdk/compare/v3.3.4...v3.3.5) (2024-11-28)
 
 
