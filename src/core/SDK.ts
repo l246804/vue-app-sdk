@@ -129,7 +129,7 @@ export class AppSDK extends AppSDKHookable<AppSDKHooks> {
    * ```
    */
   getPlugin = <T, ID extends Plugin['id'] = Plugin['id']>(id: ID) => {
-    return this._plugins.find((p) => p.id === id) as IfUnknown<T, InferPlugin<ID>, T> | undefined
+    return this._allPlugins.find((p) => p.id === id) as IfUnknown<T, InferPlugin<ID>, T> | undefined
   }
 
   /**
