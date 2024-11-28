@@ -232,7 +232,7 @@ export class Router implements Plugin {
    * 消费详情数据
    */
   private _consumeDetailsData = () => {
-    const isChanged = this._detailsData === DEFAULT_DETAILS_DATA
+    const isChanged = this._detailsData !== DEFAULT_DETAILS_DATA
     const data = isChanged ? this._detailsData : undefined
     return { isChanged, data }
   }
@@ -372,11 +372,9 @@ export class Router implements Plugin {
       return router.go(delta)
     }
     router.forwardWithData = function (data) {
-      _setDetailsData(data)
       return router.goWithData(1, data)
     }
     router.backWithData = function (data) {
-      _setDetailsData(data)
       return router.goWithData(-1, data)
     }
     router.clearDetailsRecord = this.clearDetailsRecord
