@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.7](https://github.com/l246804/vue-app-sdk/compare/v3.3.6...v3.3.7) (2024-11-28)
+
+
+### Bug Fixes
+
+* 🐛 修复 router._updateDetailsRecord 无法触发响应式监听 ([39f33e6](https://github.com/l246804/vue-app-sdk/commit/39f33e6f8b38d91f037f4bd20421951330754ab9))
+
 ## [3.3.6](https://github.com/l246804/vue-app-sdk/compare/v3.3.5...v3.3.6) (2024-11-28)
 
 
