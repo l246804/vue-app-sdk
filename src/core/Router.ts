@@ -6,7 +6,7 @@ import type { RouteLocationNormalized } from 'vue-router'
 import type { Plugin, PluginID } from './Plugin'
 import { assign, createPersistentRef } from '@/utils'
 import { pick } from 'nice-fns'
-import { inject, ref, shallowReactive, shallowReadonly, watch } from 'vue'
+import { inject, ref, shallowReactive, shallowReadonly, triggerRef, watch } from 'vue'
 import { isNavigationFailure, useRoute } from 'vue-router'
 import { type AppSDKInternalInstance, useAppSDK } from './SDK'
 
@@ -243,6 +243,9 @@ export class Router implements Plugin {
    */
   private _updateDetailsRecord(value: RouteDetailsRecord) {
     this._detailsRecord.value = value
+    if (this._detailsRecord.value === value) {
+      triggerRef(this._detailsRecord)
+    }
   }
 
   /**
