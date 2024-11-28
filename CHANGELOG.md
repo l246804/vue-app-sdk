@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.3.5](https://github.com/l246804/vue-app-sdk/compare/v3.3.4...v3.3.5) (2024-11-28)
+
+
+### Features
+
+* 🎸 vue-router 新增 isNavigating 属性标识是否正在导航 ([142d2de](https://github.com/l246804/vue-app-sdk/commit/142d2de91a33a9501b6fe48b14ea34b61ce0e1cc))
+
+
+### Bug Fixes
+
+* 🐛 修复 sdk.getPlugin 无法获取内置插件实例 ([f36dbe3](https://github.com/l246804/vue-app-sdk/commit/f36dbe30cdc1809ee7bc93c6b4072ba0eba6957c))
+
 ## [3.3.4](https://github.com/l246804/vue-app-sdk/compare/v3.3.3...v3.3.4) (2024-11-18)
 
 
