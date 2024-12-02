@@ -115,7 +115,7 @@ export function useRouteDetails<T = unknown>() {
   const { fullPath } = useRoute()
 
   // 路由详情
-  const details = shallowReactive(makeDetails(getDetails[fullPath]) as RouteDetails<T>)
+  const details = shallowReactive(makeDetails(getDetails(fullPath)) as RouteDetails<T>)
 
   // 监听详情记录，有变更时更新 details
   watch(detailsRecord, (record) => {
