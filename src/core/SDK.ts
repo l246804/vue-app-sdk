@@ -54,6 +54,9 @@ export class AppSDK extends AppSDKHookable<AppSDKHooks> {
     public options: AppSDKOptions = {},
   ) {
     super()
+
+    // 初始化内置插件列表
+    this._builtinPlugins = [new AppSDKRouter(this.options.router)]
   }
 
   /**
@@ -87,9 +90,7 @@ export class AppSDK extends AppSDKHookable<AppSDKHooks> {
    * 内置插件列表
    * @readonly
    */
-  private get _builtinPlugins() {
-    return [new AppSDKRouter(this.options.router)] as Plugin[]
-  }
+  private _builtinPlugins: Plugin[] = []
 
   /**
    * 全部插件列表
