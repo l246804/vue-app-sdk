@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.8](https://github.com/l246804/vue-app-sdk/compare/v3.3.7...v3.3.8) (2024-12-02)
+
+
+### Bug Fixes
+
+* 🐛 修复 useRouteDetails 在页面初次加载时无法获取跳转详情 ([ee187ad](https://github.com/l246804/vue-app-sdk/commit/ee187ad600c7f39d52baac85935b6fd5a9541b50))
+
 ## [3.3.7](https://github.com/l246804/vue-app-sdk/compare/v3.3.6...v3.3.7) (2024-11-28)
 
 
