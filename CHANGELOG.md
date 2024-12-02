@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.9](https://github.com/l246804/vue-app-sdk/compare/v3.3.8...v3.3.9) (2024-12-02)
+
+
+### Bug Fixes
+
+* 🐛 修复 SDK 内置插件列表使用 getter 形式会重复创建新实例 ([42044ae](https://github.com/l246804/vue-app-sdk/commit/42044ae5cc6e2709d404897687a6cede35c90ae8))
+
 ## [3.3.8](https://github.com/l246804/vue-app-sdk/compare/v3.3.7...v3.3.8) (2024-12-02)
 
 
