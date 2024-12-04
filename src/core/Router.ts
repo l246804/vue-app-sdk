@@ -301,11 +301,6 @@ export class Router implements Plugin {
     // =======================注入详情记录=======================
     app.provide(DETAILS_RECORD_KEY, this._detailsRecord)
 
-    // =======================初始化记录位置=======================
-    router.isReady().then(() => {
-      this.latestPosition = this.getCurrentPosition()
-    })
-
     // =======================正在导航=======================
     router.beforeEach(() => {
       this._isNavigating.value = true
@@ -324,7 +319,7 @@ export class Router implements Plugin {
       if (isNavigationFailure(failure))
         return
 
-      const latestPosition = this.latestPosition
+      const latestPosition = this.latestPosition ?? this.getCurrentPosition()
       const currentPosition = this.getCurrentPosition()
       const direction = this.identifyDirection({ to, from, latestPosition, currentPosition })
 
@@ -388,10 +383,10 @@ export class Router implements Plugin {
       const { isChanged, data } = _consumeDetailsData()
 
       switch (direction) {
-        // 路由未变更时删除旧详情并添加新详情
+        // 路由未变更时根据数据副本更新旧详情
         case NavigationDirection.unchanged:
-          delete detailsRecord[from.fullPath]
-          detailsRecord[to.fullPath] = this.makeDetails({ from, data }, true)
+          if (isChanged)
+            detailsRecord[to.fullPath] = this.makeDetails({ from, data }, true)
           break
 
         // 路由后退时删除来源路由详情并根据数据副本更新旧详情
@@ -409,6 +404,7 @@ export class Router implements Plugin {
 
       // 更新详情记录
       this._updateDetailsRecord(detailsRecord)
+      _setDetailsData(DEFAULT_DETAILS_DATA)
     })
 
     // =======================注册集中清理=======================
