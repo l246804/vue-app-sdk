@@ -129,12 +129,14 @@ export function useRouteDetails<T = unknown>() {
   // 监听详情记录，有变更时更新 details
   watch(detailsRecord, (record) => {
     const newDetails = record[fullPath]
-    if (!newDetails)
+    if (!newDetails) {
       return
+    }
 
     // 不相等时更新详情
-    if (newDetails[DETAILS_CHANGED_FLAG] !== details[DETAILS_CHANGED_FLAG])
+    if (newDetails[DETAILS_CHANGED_FLAG] !== details[DETAILS_CHANGED_FLAG]) {
       assign(details, newDetails)
+    }
   })
 
   return shallowReadonly(details)
@@ -169,7 +171,7 @@ function initDetailsWatcher(onCleanup: () => void) {
   )
 
   function cleanup() {
-    if (watcher && !watcher.size) {
+    if (watcher) {
       unwatch()
       watcher.clear()
       watcher = null
@@ -275,14 +277,17 @@ const defaultIdentifyDirection: NotNullish<RouterOptions['identifyDirection']> =
   latestPosition,
   currentPosition,
 }) => {
-  if (latestPosition == null || currentPosition == null)
+  if (latestPosition == null || currentPosition == null) {
     return NavigationDirection.forward
+  }
 
-  if (currentPosition < latestPosition)
+  if (currentPosition < latestPosition) {
     return NavigationDirection.backward
+  }
 
-  if (currentPosition === latestPosition)
+  if (currentPosition === latestPosition) {
     return NavigationDirection.unchanged
+  }
 
   return NavigationDirection.forward
 }
@@ -409,12 +414,14 @@ export class Router implements Plugin {
     )
 
     // 设置只读来源信息
-    if (result.from)
+    if (result.from) {
       result.from = Object.freeze(pick(result.from, ['path', 'name', 'fullPath', 'hash']))
+    }
 
     // 自增变更次数
-    if (increment)
+    if (increment) {
       result[DETAILS_CHANGED_FLAG]++
+    }
 
     return result
   }
@@ -448,8 +455,9 @@ export class Router implements Plugin {
     // =======================识别方向=======================
     router.afterEach((to, from, failure) => {
       // 导航失败跳过后续操作
-      if (isNavigationFailure(failure))
+      if (isNavigationFailure(failure)) {
         return
+      }
 
       const latestPosition = this.latestPosition ?? this.getCurrentPosition()
       const currentPosition = this.getCurrentPosition()
@@ -476,8 +484,9 @@ export class Router implements Plugin {
     // =======================beforeOnce=======================
     router.beforeOnce = (guard) => {
       return router.beforeEach((...args) => {
-        if (this._onceLocked)
+        if (this._onceLocked) {
           return
+        }
         this._onceLocked = true
         return guard(...args)
       })
@@ -514,28 +523,35 @@ export class Router implements Plugin {
       const detailsRecord = this._detailsRecord.value
       const { isChanged, data } = _consumeDetailsData()
 
+      const updateDetails = () => {
+        return this.makeDetails(assign({}, detailsRecord[to.fullPath], { from, data }), true)
+      }
+
       switch (direction) {
         // 路由未变更时根据数据副本更新旧详情
         case NavigationDirection.unchanged:
-          if (isChanged)
-            detailsRecord[to.fullPath] = this.makeDetails({ from, data }, true)
+          if (isChanged) {
+            updateDetails()
+          }
           break
 
         // 路由后退时删除来源路由详情并根据数据副本更新旧详情
         case NavigationDirection.backward:
           delete detailsRecord[from.fullPath]
-          if (isChanged)
-            detailsRecord[to.fullPath] = this.makeDetails({ from, data }, true)
+          if (isChanged) {
+            updateDetails()
+          }
           break
 
         // 路由前进时仅添加新详情
         default:
-          detailsRecord[to.fullPath] = this.makeDetails({ from, data }, true)
+          updateDetails()
           break
       }
 
       // 更新详情记录
       this._updateDetailsRecord(detailsRecord)
+      // 还原详情数据
       _setDetailsData(DEFAULT_DETAILS_DATA)
     })
 
