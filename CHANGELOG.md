@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.1](https://github.com/l246804/vue-app-sdk/compare/v3.4.0...v3.4.1) (2024-12-04)
+
+
+### Bug Fixes
+
+* 🐛 修复 watchDetails 获取错误的属性导致报错 ([0a1c4e0](https://github.com/l246804/vue-app-sdk/commit/0a1c4e06d0d5a90b64432753424e228bec3cf3ae))
+
 ## [3.4.0](https://github.com/l246804/vue-app-sdk/compare/v3.3.10...v3.4.0) (2024-12-04)
 
 
