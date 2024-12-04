@@ -524,7 +524,10 @@ export class Router implements Plugin {
       const { isChanged, data } = _consumeDetailsData()
 
       const updateDetails = () => {
-        return this.makeDetails(assign({}, detailsRecord[to.fullPath], { from, data }), true)
+        detailsRecord[to.fullPath] = this.makeDetails(
+          assign({}, detailsRecord[to.fullPath], { from, data }),
+          true,
+        )
       }
 
       switch (direction) {
