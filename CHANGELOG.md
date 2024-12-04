@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.3](https://github.com/l246804/vue-app-sdk/compare/v3.4.2...v3.4.3) (2024-12-04)
+
+
+### Bug Fixes
+
+* 🐛 修复路由导航变更时未正确更新详情 ([7e5b0ac](https://github.com/l246804/vue-app-sdk/commit/7e5b0ac26f09d6e62e15562373cc7db1ccaac422))
+
 ## [3.4.2](https://github.com/l246804/vue-app-sdk/compare/v3.4.1...v3.4.2) (2024-12-04)
 
 
