@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.0](https://github.com/l246804/vue-app-sdk/compare/v3.3.10...v3.4.0) (2024-12-04)
+
+
+### Features
+
+* 🎸 新增 watchDetails 函数，用于精确监听路由详情 ([7df651e](https://github.com/l246804/vue-app-sdk/commit/7df651e991b8d0205fd21395c4ff901e5b141a72))
+
 ## [3.3.10](https://github.com/l246804/vue-app-sdk/compare/v3.3.9...v3.3.10) (2024-12-04)
 
 
