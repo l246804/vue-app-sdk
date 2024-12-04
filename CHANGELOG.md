@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.3.10](https://github.com/l246804/vue-app-sdk/compare/v3.3.9...v3.3.10) (2024-12-04)
+
+
+### Bug Fixes
+
+* 🐛 修复路由导航未变更时丢失详情数据 ([0b05f51](https://github.com/l246804/vue-app-sdk/commit/0b05f51286c440bb9a5a5b13136dfd9f9928c4f7))
+
 ## [3.3.9](https://github.com/l246804/vue-app-sdk/compare/v3.3.8...v3.3.9) (2024-12-02)
 
 
