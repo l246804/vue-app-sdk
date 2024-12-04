@@ -133,7 +133,7 @@ export function useRouteDetails<T = unknown>() {
       return
 
     // 不相等时更新详情
-    if (newDetails[fullPath[DETAILS_CHANGED_FLAG]] !== details[DETAILS_CHANGED_FLAG])
+    if (newDetails[DETAILS_CHANGED_FLAG] !== details[DETAILS_CHANGED_FLAG])
       assign(details, newDetails)
   })
 
