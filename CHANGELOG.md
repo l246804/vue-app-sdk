@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.4.2](https://github.com/l246804/vue-app-sdk/compare/v3.4.1...v3.4.2) (2024-12-04)
+
+
+### Bug Fixes
+
+* 🐛 修复 useRouteDetails 判断更新存在错误 ([63cd3a3](https://github.com/l246804/vue-app-sdk/commit/63cd3a3c9aa6cbc143e2b2718d2ada3d6cf68650))
+
 ## [3.4.1](https://github.com/l246804/vue-app-sdk/compare/v3.4.0...v3.4.1) (2024-12-04)
 
 
