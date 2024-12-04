@@ -254,7 +254,7 @@ export function watchDetails<T = unknown>(
     proxy[DETAILS_WATCHER_KEY] = null
   })
 
-  const watcher: DetailsWatcher = proxy._routeDetailsWatcher
+  const watcher: DetailsWatcher = proxy[DETAILS_WATCHER_KEY]
   watcher.set(fromKey, callback)
 
   const unwatch = () => watcher.delete(fromKey, callback)
