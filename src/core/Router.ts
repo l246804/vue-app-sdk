@@ -1,12 +1,21 @@
 import type { StorageOptions } from '@/types'
-import type { NoopFn, NotNullish, Simplify } from '@rhao/types-base'
+import type { NoopFn, NotNullish, SetRequired, Simplify } from '@rhao/types-base'
 /* eslint-disable ts/method-signature-style */
 import type { InjectionKey, ShallowRef } from 'vue'
 import type { RouteLocationNormalized } from 'vue-router'
 import type { Plugin, PluginID } from './Plugin'
-import { assign, createPersistentRef } from '@/utils'
-import { pick } from 'nice-fns'
-import { inject, ref, shallowReactive, shallowReadonly, triggerRef, watch } from 'vue'
+import { assign, createPersistentRef, logger } from '@/utils'
+import { isFunction, pick } from 'nice-fns'
+import {
+  getCurrentInstance,
+  inject,
+  onBeforeUnmount,
+  ref,
+  shallowReactive,
+  shallowReadonly,
+  triggerRef,
+  watch,
+} from 'vue'
 import { isNavigationFailure, useRoute } from 'vue-router'
 import { type AppSDKInternalInstance, useAppSDK } from './SDK'
 
@@ -129,6 +138,129 @@ export function useRouteDetails<T = unknown>() {
   })
 
   return shallowReadonly(details)
+}
+
+export type WatchDetailsFromKey =
+  | RouteLocationNormalized['path']
+  | RouteLocationNormalized['fullPath']
+  | RouteLocationNormalized['name']
+
+export type WatchDetailsCallback<T = any> = (
+  data: T | undefined,
+  details: SetRequired<RouteDetails<T>, 'from'>,
+) => void
+
+type DetailsWatcher = ReturnType<typeof initDetailsWatcher>
+
+function initDetailsWatcher(onCleanup: () => void) {
+  const routeDetails = useRouteDetails()
+  let watcher: Map<WatchDetailsFromKey, WatchDetailsCallback[]> | null = new Map()
+
+  const unwatch = watch(
+    () => routeDetails,
+    (details) => {
+      if (watcher && details.from) {
+        watcher.get(details.from.path)?.forEach((fn) => fn(details.data, details))
+        watcher.get(details.from.fullPath)?.forEach((fn) => fn(details.data, details))
+        watcher.get(details.from.name)?.forEach((fn) => fn(details.data, details))
+      }
+    },
+    { deep: true },
+  )
+
+  function cleanup() {
+    if (watcher && !watcher.size) {
+      unwatch()
+      watcher.clear()
+      watcher = null
+      onCleanup()
+    }
+  }
+
+  return {
+    set(key: WatchDetailsFromKey, callback: WatchDetailsCallback) {
+      if (watcher && isFunction(callback)) {
+        if (!watcher.has(key)) {
+          watcher.set(key, [])
+        }
+        watcher.get(key)!.push(callback)
+      }
+    },
+
+    delete(key: WatchDetailsFromKey, callback: WatchDetailsCallback) {
+      if (watcher && watcher.has(key)) {
+        const callbacks = watcher.get(key)!
+        const index = callbacks.indexOf(callback)
+        if (index > -1) {
+          callbacks.splice(index, 1)
+        }
+
+        if (!callbacks.length) {
+          watcher.delete(key)
+        }
+      }
+
+      if (watcher && !watcher.size) {
+        cleanup()
+      }
+    },
+  }
+}
+
+const DETAILS_WATCHER_KEY = Symbol('details watcher key')
+
+/**
+ * 精确监听路由详情，必须在组件 setup() 作用域内使用，将会在组件卸载前自动取消监听，支持手动取消
+ * @param fromKey 来源标识，支持路由的 `path`、`fullPath`、`name`
+ * @param callback 监听回调
+ * @returns 取消监听回调
+ *
+ * @example
+ * ```ts
+ * // a.vue
+ * import { watchDetails } from 'vue-app-sdk'
+ *
+ * // 精确监听路由 `/b` 传递的消息
+ * watchDetails('/b', (data) => {
+ *   console.log(data.msg) // => 'from b'
+ * })
+ *
+ * router.pushWithData('/b', { msg: 'from a' })
+ *
+ * // b.vue
+ * import { useRouteDetails } from 'vue-app-sdk'
+ *
+ * const details = useRouteDetails()
+ * details.data.msg // => 'from a'
+ *
+ * router.backWithData({ msg: 'from b' })
+ * ```
+ */
+export function watchDetails<T = unknown>(
+  fromKey: WatchDetailsFromKey,
+  callback: WatchDetailsCallback<T>,
+) {
+  const vm = getCurrentInstance()
+  if (!vm) {
+    logger.error(`watchDetails() 必须在组件 setup() 作用域内调用！`)
+  }
+
+  if (!vm || !vm.proxy) {
+    return () => {}
+  }
+
+  const proxy = vm.proxy as any
+  proxy[DETAILS_WATCHER_KEY] ||= initDetailsWatcher(() => {
+    proxy[DETAILS_WATCHER_KEY] = null
+  })
+
+  const watcher: DetailsWatcher = proxy._routeDetailsWatcher
+  watcher.set(fromKey, callback)
+
+  const unwatch = () => watcher.delete(fromKey, callback)
+  onBeforeUnmount(unwatch)
+
+  return unwatch
 }
 
 /**
