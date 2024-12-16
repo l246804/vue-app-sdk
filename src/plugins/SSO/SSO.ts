@@ -1,6 +1,6 @@
 import type { Plugin, PluginID } from 'vue-app-sdk'
 import type { LocationQuery, RouteLocationNormalized } from 'vue-router'
-import { isArray, isString } from 'nice-fns'
+import { isArray, isString, omit } from 'nice-fns'
 
 export interface VerifyParamRecord {
   /**
@@ -151,6 +151,15 @@ export class SSO implements Plugin {
     }
 
     return [DEFAULT_GROUP_KEY, params]
+  }
+
+  /**
+   * 剔除 `route.query` 里的验证参数
+   * @param query 路由查询参数
+   * @param params 验证参数
+   */
+  omitVerifyParams = (query: LocationQuery, params: any) => {
+    return omit(query, Object.keys(params || {}))
   }
 
   /**
