@@ -1,5 +1,13 @@
 # Changelog
 
+## [3.5.0](https://github.com/l246804/vue-app-sdk/compare/v3.4.4...v3.5.0) (2024-12-16)
+
+
+### Features
+
+* 🎸 支持构建 umd 格式 ([1022159](https://github.com/l246804/vue-app-sdk/commit/10221598e0ee54e92a419545a808e5922c581870))
+* 🎸 SSO 插件新增 omitVerifyParams 方法 ([94e9037](https://github.com/l246804/vue-app-sdk/commit/94e9037505ae0e3177f9953f3f8166d0d6969c59))
+
 ## [3.4.4](https://github.com/l246804/vue-app-sdk/compare/v3.4.3...v3.4.4) (2024-12-04)
 
 
