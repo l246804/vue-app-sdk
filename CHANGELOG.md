@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.5.1](https://github.com/l246804/vue-app-sdk/compare/v3.5.0...v3.5.1) (2024-12-16)
+
+
+### Bug Fixes
+
+* 🐛 修复 SSO 构建类型文件失败 ([d5baa06](https://github.com/l246804/vue-app-sdk/commit/d5baa062e5efd63f8e2460ef28e6508931e8348a))
+
+
+### Chores
+
+* 🤖 优化 SSO.omitVerifyParams 类型 ([998a5c0](https://github.com/l246804/vue-app-sdk/commit/998a5c0703bed6bdcf19493316a1118613337f94))
+
 ## [3.5.0](https://github.com/l246804/vue-app-sdk/compare/v3.4.4...v3.5.0) (2024-12-16)
 
 
