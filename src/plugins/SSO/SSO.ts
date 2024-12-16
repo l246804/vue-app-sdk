@@ -159,7 +159,7 @@ export class SSO implements Plugin {
    * @param params 验证参数
    */
   omitVerifyParams = (query: LocationQuery, params: any) => {
-    return omit(query, Object.keys(params || {}))
+    return omit(query, Object.keys(params || {})) as LocationQuery
   }
 
   /**
