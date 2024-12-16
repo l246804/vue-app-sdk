@@ -1,6 +1,8 @@
+import type { PackageJson } from '@rhao/types-base'
 import type { OutputOptions } from 'rollup'
 import type { UserConfig } from 'vite'
-import { resolve } from 'node:path'
+import { basename, resolve } from 'node:path'
+import glob from 'fast-glob'
 import { defineConfig } from 'vite'
 import Dts from 'vite-plugin-dts'
 import pkg from './package.json'
@@ -9,24 +11,23 @@ import pkg from './package.json'
 const esmExt = '.js'
 const cjsExt = '.cjs'
 
-// 代码压缩
-const minify = false
-// 代码树摇
-const treeshake = true
-
 // 输出目录
-const outDir = resolve(__dirname, 'dist')
+export const outDir = resolve(__dirname, 'dist')
 
 // 入口目录
 const entryDir = resolve(__dirname, 'src')
+export const entryFile = 'src/index'
 
 // 生成外部依赖配置
-function genExternals() {
-  const { peerDependencies = {}, dependencies = {} } = pkg as any
-  return [
-    /^node(:.+)?$/,
-    ...new Set([...Object.keys(peerDependencies), ...Object.keys(dependencies), pkg.name]),
-  ].map((p) => (p instanceof RegExp ? p : new RegExp(`^${p}$|^${p}/.+`))) as RegExp[]
+export function genExternals() {
+  const { peerDependencies = {} } = pkg as PackageJson
+  // 需要外化的依赖列表
+  const deps = new Set<string | RegExp>([...Object.keys(peerDependencies)])
+
+  // 移除 node 内置依赖
+  deps.add(/^node(:.+)?$/)
+
+  return [...deps].map((p) => (p instanceof RegExp ? p : new RegExp(`^${p}$|^${p}/.+`)))
 }
 
 // 生成模块输出配置
@@ -39,10 +40,14 @@ function genOutput(format: 'cjs' | 'esm') {
     // 源码根目录
     preserveModulesRoot: entryDir,
     // 入口文件名
-    entryFileNames: (info) =>
-      `${/node_modules/.test(info.name) ? info.name.split('node_modules/').at(-1)! : '[name]'}${
-        format === 'esm' ? esmExt : cjsExt
-      }`,
+    entryFileNames(info) {
+      let name = '[name]'
+      if (/node_modules/.test(info.name)) {
+        name = info.name.split('node_modules/').at(-1)!
+        name = `vendors/${name}`
+      }
+      return name + (format === 'esm' ? esmExt : cjsExt)
+    },
     // 导出模式
     exports: 'named',
   } as OutputOptions
@@ -52,21 +57,21 @@ export default defineConfig(() => {
   return {
     build: {
       outDir,
-      minify,
-      sourcemap: true,
+      minify: false,
       lib: {
-        entry: 'src/index',
+        entry: entryFile,
       },
       rollupOptions: {
-        treeshake,
         external: genExternals(),
+        // 避免 treeshake 时丢失 index.ts
+        input: glob.sync(`${basename(entryDir)}/**/index.ts`, { deep: 2 }),
         output: [genOutput('esm'), genOutput('cjs')],
       },
     },
     resolve: {
       alias: {
-        'vue-app-sdk': entryDir,
         '@': entryDir,
+        'vue-app-sdk': entryDir,
       },
     },
     plugins: [Dts({ include: [entryDir] })],
