@@ -734,7 +734,7 @@ export class Tabs implements Plugin {
     route: RouteForGenerableID & { matched?: RouteLocationNormalized['matched'] },
   ) => {
     const page = getMetadata(route)
-    if (!page)
+    if (!this.isValidRawPage(page))
       return
 
     const tabPage = this.createTabPage(route)
