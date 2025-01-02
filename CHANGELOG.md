@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.5.2](https://github.com/l246804/vue-app-sdk/compare/v3.5.1...v3.5.2) (2025-01-02)
+
+
+### Bug Fixes
+
+* 🐛 fix Tabs.addOne ([3120a78](https://github.com/l246804/vue-app-sdk/commit/3120a786db42a9e63c9d4061a03115103e78e968))
+
 ## [3.5.1](https://github.com/l246804/vue-app-sdk/compare/v3.5.0...v3.5.1) (2024-12-16)
 
 
